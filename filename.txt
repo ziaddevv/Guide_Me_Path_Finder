@@ -1,16 +1,7 @@
-2
+3
 MapOfEgypt
 Cairo Alexandria 220 2.5
-Cairo Giza 30 0.5
-Alexandria MarsaMatrouh 280 3.0
-#
-MapOfEurope
-Paris Berlin 1050 11.0
-Berlin Rome 1500 14.5
-#
-MapOfEgypt
 Cairo Giza 20 0.5
-Cairo Alexandria 220 2.5
 Cairo Luxor 650 8.0
 Aswan Luxor 200 3.0
 SharmElSheikh Cairo 500 7.0
@@ -22,4 +13,39 @@ Fayoum Cairo 130 2.0
 Minya Cairo 240 4.0
 PortSaid Suez 100 1.5
 Luxor Tanta 600 7.5
+Alexandria MarsaMatruh 280 3.0
+#
+MapOfEurope
+Paris Berlin 1050 11.0
+Berlin Rome 1500 14.5
+Paris London 340 3.5
+London Berlin 930 10.0
+Rome Madrid 1360 14.0
+Madrid Paris 1050 12.0
+Amsterdam Berlin 650 7.0
+Amsterdam Paris 430 4.5
+Vienna Berlin 680 7.5
+Prague Berlin 350 4.0
+Zurich Paris 490 5.5
+Zurich Rome 700 8.0
+Athens Rome 1050 12.0
+#
+MapOfUSA
+NewYork Washington 360 4.0
+Washington LosAngeles 4300 41.0
+LosAngeles SanFrancisco 610 6.5
+SanFrancisco Seattle 1300 14.0
+Seattle Chicago 3300 30.0
+Chicago NewYork 1270 13.0
+Miami NewYork 2100 21.0
+Miami Washington 1500 16.0
+Houston Chicago 1760 18.0
+Dallas Houston 360 3.5
+LasVegas LosAngeles 435 4.5
+Phoenix LosAngeles 580 6.0
+Denver Chicago 1600 16.0
+Boston NewYork 350 4.0
+Philadelphia NewYork 160 2.0
+Atlanta Washington 870 9.0
+Atlanta Miami 980 10.0
 #

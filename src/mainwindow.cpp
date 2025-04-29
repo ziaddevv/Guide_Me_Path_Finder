@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     Filehandler f;
-    f.ReadGraphFromFile("");
-    ui->lineEdit->setText(QString::fromStdString(f.graphs[1].name));
-    g=f.graphs[2];
+    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
 
+    g=f.graphs[2];
+    ui->lineEdit->setText(QString::fromStdString(g.name));
 
     vector<string>cities=g.getAllCities();
     ui->FirstCityCmb->addItem(QString::fromStdString(""));
