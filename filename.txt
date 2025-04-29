@@ -1,0 +1,25 @@
+2
+MapOfEgypt
+Cairo Alexandria 220 2.5
+Cairo Giza 30 0.5
+Alexandria MarsaMatrouh 280 3.0
+#
+MapOfEurope
+Paris Berlin 1050 11.0
+Berlin Rome 1500 14.5
+#
+MapOfEgypt
+Cairo Giza 20 0.5
+Cairo Alexandria 220 2.5
+Cairo Luxor 650 8.0
+Aswan Luxor 200 3.0
+SharmElSheikh Cairo 500 7.0
+Tanta Cairo 100 1.5
+PortSaid Cairo 150 2.0
+Suez Cairo 130 2.0
+MarsaMatruh Alexandria 240 3.5
+Fayoum Cairo 130 2.0
+Minya Cairo 240 4.0
+PortSaid Suez 100 1.5
+Luxor Tanta 600 7.5
+#

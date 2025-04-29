@@ -11,12 +11,13 @@ using namespace std;
 
 class Graph {
 private:
-    int numberOfCities=0;
-    unordered_map<string, unordered_map<string, pair<double, double>>> adj;
 
 public:
-    vector<string>getAllCities();
 
+    int numberOfCities=0;
+    string name;
+    unordered_map<string, unordered_map<string, pair<double, double>>> adj;
+     vector<string>getAllCities();
     int getnumberOfCities();
     void addCity(const string& name);
     void addEdge(const string& src, const string& dest, double distance, double time);

@@ -1,7 +1,32 @@
-<<<<<<< HEAD
-# Your version of .gitignore (on the remote)
-# Example of remote .gitignore content
-=======
-# Your local version of .gitignore
-# Example of your .gitignore content
->>>>>>> cd6d75f... Initial commit + organized structure
+# Ignore the build directory
+build/
+
+# Optionally, add other common ignores
+
+# Ignore compiled files
+*.o
+*.obj
+*.exe
+*.out
+*.dll
+*.so
+*.dylib
+
+# Ignore IDE/project files (example for Visual Studio, Qt, etc.)
+.vscode/
+.idea/
+*.pro.user
+
+# Ignore log files
+*.log
+
+# Ignore backup files
+*~
+*.bak
+
+# Ignore other build artifacts
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.a
+*.lib

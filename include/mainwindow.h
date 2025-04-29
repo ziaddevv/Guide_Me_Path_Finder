@@ -26,6 +26,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-     Graph g;
+   Graph g;
 };
 #endif // MAINWINDOW_H

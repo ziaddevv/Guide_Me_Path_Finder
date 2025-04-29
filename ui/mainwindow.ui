@@ -152,6 +152,16 @@
      <string>choose Start City</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>82</x>
+      <y>420</y>
+      <width>661</width>
+      <height>71</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
