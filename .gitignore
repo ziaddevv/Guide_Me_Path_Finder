@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignore the build directory
 build/
 
@@ -30,3 +31,13 @@ CMakeCache.txt
 Makefile
 *.a
 *.lib
+=======
+<<<<<<< HEAD
+# Your version of .gitignore (on the remote)
+# Example of remote .gitignore content
+=======
+# Your local version of .gitignore
+# Example of your .gitignore content
+>>>>>>> cd6d75f... Initial commit + organized structure
+built/
+>>>>>>> a65634d8baa9aa184fbb935cae1cd6bfb9ffa5f6
