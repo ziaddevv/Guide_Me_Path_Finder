@@ -3,6 +3,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
+INCLUDEPATH += include
+
 SOURCES += \
     src/graph.cpp \
     src/main.cpp \
