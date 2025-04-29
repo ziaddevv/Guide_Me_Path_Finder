@@ -5,3 +5,4 @@
 # Your local version of .gitignore
 # Example of your .gitignore content
 >>>>>>> cd6d75f... Initial commit + organized structure
+built/
