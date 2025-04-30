@@ -2,7 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <vector>
 #include "graph.hpp"
+#include "filehandler.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -19,13 +22,14 @@ public:
 
 private slots:
     void on_bfsBtn_clicked();
-
     void on_dfsBtn_clicked();
-
     void on_dijkstraBtn_clicked();
+    void onMapSelectionChanged(int index);
 
 private:
+    void updateCityComboBoxes();
     Ui::MainWindow *ui;
-   Graph g;
+    std::vector<Graph> graphs;  // Stores all loaded graphs
+    Graph currentGraph;         // Currently selected graph
 };
 #endif // MAINWINDOW_H

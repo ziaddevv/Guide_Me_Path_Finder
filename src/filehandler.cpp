@@ -2,12 +2,11 @@
 #include <QFile>
 #include<QTextStream>
 #include<QMessageBox>
-#include <sstream>
 #include <vector>
 Filehandler::Filehandler() {}
  string Filehandler::ReadFile()
 {
-    QFile file("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+    QFile file("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::information(0, "info", file.errorString());
         return "";
