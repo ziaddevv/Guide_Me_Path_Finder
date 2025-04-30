@@ -2,13 +2,17 @@
 
 
 void Graph::addCity(const string& name) {
+    if (adj.find(name) == adj.end()) {
+        numberOfCities++;
+    }
     adj[name];
-    numberOfCities++;
 }
+
 int Graph::getnumberOfCities()
 {
     return numberOfCities;
 }
+
 vector<string> Graph::getAllCities()
 {
     vector<string>res;
@@ -18,20 +22,29 @@ vector<string> Graph::getAllCities()
     }
     return res;
 }
+
 void Graph::addEdge(const string& src, const string& dest, double distance, double time) {
     if (src == dest) return;
+    if (distance < 0) distance *= -1;
+    if (time < 0) time *= -1;
+    for (auto& edge : adj[src]) {
+        if (edge.first == dest && edge.second.first == distance && edge.second.second == time) return;  // Skip duplicates
+    }
     adj[src][dest] = {distance, time};
     adj[dest][src] = {distance, time};
 }
 
 void Graph::deleteCity(const string& name) {
+    if (adj.find(name) == adj.end()) return;
     for (auto& [city, neighbors] : adj) {
         neighbors.erase(name);
     }
     adj.erase(name);
+    numberOfCities--;
 }
 
 void Graph::deleteEdge(const string& src, const string& dest) {
+    if (adj.find(src) == adj.end() || adj.find(dest) == adj.end()) return;
     adj[src].erase(dest);
     adj[dest].erase(src);
 }
@@ -49,7 +62,7 @@ string Graph::BFS(const string& start) {
     while (!q.empty()) {
         string city = q.front();
         q.pop();
-        result += city + " ";
+        result += city + " --> ";
 
         for (auto& [neighbor, _] : adj[city]) {
             if (visited.find(neighbor) == visited.end()) {
@@ -57,6 +70,11 @@ string Graph::BFS(const string& start) {
                 q.push(neighbor);
             }
         }
+    }
+
+    // Remove the trailing " --> " if the result is not empty
+    if (!result.empty()) {
+        result = result.substr(0, result.size() - 5);
     }
 
     return result;
@@ -77,7 +95,7 @@ string Graph::DFS(const string& start) {
 
         if (visited.find(city) == visited.end()) {
             visited.insert(city);
-            result += city + " ";
+            result += city + " --> ";
 
             for (auto& [neighbor, _] : adj[city]) {
                 if (visited.find(neighbor) == visited.end()) {
@@ -87,8 +105,14 @@ string Graph::DFS(const string& start) {
         }
     }
 
+    // Remove the trailing " --> " if the result is not empty
+    if (!result.empty()) {
+        result = result.substr(0, result.size() - 5);
+    }
+
     return result;
 }
+
 string Graph::DijkstraDistance(const string& start, const string& destination) {
 
     if (adj.find(start) == adj.end() || adj.find(destination) == adj.end()) {
@@ -149,10 +173,10 @@ string Graph::DijkstraDistance(const string& start, const string& destination) {
 
     stringstream result;
     for (size_t i = 0; i < path.size(); ++i) {
-        result << path[i] << (i + 1 < path.size() ? " " : "");
+        result << path[i] << (i + 1 < path.size() ? " --> " : "");
     }
-    result << " | " << minDistance[destination]
-           << " | " << totalTime;
+    result << " | " << minDistance[destination] << " Km"
+           << " | " << totalTime << " h Using Car";
 
     return result.str();
 }

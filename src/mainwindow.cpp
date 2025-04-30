@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "filehandler.hpp"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,20 +8,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     Filehandler f;
-    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+    f.ReadGraphFromFile("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
+    graphs = f.graphs;
 
-    g=f.graphs[2];
-    ui->lineEdit->setText(QString::fromStdString(g.name));
+    // Populate map selection combo box
+    for (const auto& graph : graphs) {
+        ui->MapSelectionCmb->addItem(QString::fromStdString(graph.name));
+    }
 
-    vector<string>cities=g.getAllCities();
-    ui->FirstCityCmb->addItem(QString::fromStdString(""));
-    ui->secondCityCmb->addItem(QString::fromStdString(""));
-    ui->StartcityCmb->addItem(QString::fromStdString(""));
-    for(auto &it:cities)
-    {
-        ui->FirstCityCmb->addItem(QString::fromStdString(it));
-        ui->secondCityCmb->addItem(QString::fromStdString(it));
-        ui->StartcityCmb->addItem(QString::fromStdString(it));
+    // Connect map selection change signal
+    connect(ui->MapSelectionCmb, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::onMapSelectionChanged);
+
+    // Initialize with first map if available
+    if (!graphs.empty()) {
+        currentGraph = graphs[0];
+        updateCityComboBoxes();
     }
 }
 
@@ -32,48 +32,70 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_bfsBtn_clicked()
+void MainWindow::onMapSelectionChanged(int index)
 {
-
-
-     ui->resultText2->clear();
-
-     QString selectedOption = ui->StartcityCmb->currentText();
-    if(selectedOption.isEmpty())
-     {
-         ui->resultText2->setText(QString::fromStdString("please choose the start city"));
-        return ;
-     }
-      ui->resultText2->setText(QString::fromStdString(g.BFS(selectedOption.toStdString())));
+    if (index >= 0 && index < static_cast<int>(graphs.size())) {
+        currentGraph = graphs[index];
+        updateCityComboBoxes();
+    }
 }
 
+void MainWindow::updateCityComboBoxes()
+{
+    // Clear existing items
+    ui->FirstCityCmb->clear();
+    ui->secondCityCmb->clear();
+    ui->StartcityCmb->clear();
+
+    // Add empty default item
+    ui->FirstCityCmb->addItem("");
+    ui->secondCityCmb->addItem("");
+    ui->StartcityCmb->addItem("");
+
+    // Get cities from current graph
+    vector<string> cities = currentGraph.getAllCities();
+    for (const auto& city : cities) {
+        ui->FirstCityCmb->addItem(QString::fromStdString(city));
+        ui->secondCityCmb->addItem(QString::fromStdString(city));
+        ui->StartcityCmb->addItem(QString::fromStdString(city));
+    }
+}
+
+void MainWindow::on_bfsBtn_clicked()
+{
+    ui->resultText2->clear();
+    QString selectedOption = ui->StartcityCmb->currentText();
+    if (selectedOption.isEmpty()) {
+        ui->resultText2->setText("Please choose the start city");
+        return;
+    }
+    ui->resultText2->setText(QString::fromStdString(currentGraph.BFS(selectedOption.toStdString())));
+}
 
 void MainWindow::on_dfsBtn_clicked()
 {
     ui->resultText2->clear();
-     QString selectedOption = ui->StartcityCmb->currentText();
-    if(selectedOption.isEmpty())
-    {
-        ui->resultText2->setText(QString::fromStdString("please choose the start city"));
-        return ;
+    QString selectedOption = ui->StartcityCmb->currentText();
+    if (selectedOption.isEmpty()) {
+        ui->resultText2->setText("Please choose the start city");
+        return;
     }
-     ui->resultText2->setText(QString::fromStdString(g.DFS(selectedOption.toStdString())));
+    ui->resultText2->setText(QString::fromStdString(currentGraph.DFS(selectedOption.toStdString())));
 }
-
 
 void MainWindow::on_dijkstraBtn_clicked()
 {
     ui->resultText->clear();
-
-      QString selectedOption1 = ui->FirstCityCmb->currentText();
-      QString selectedOption2 = ui->secondCityCmb->currentText();
-      ui->chosenCities->setText(QString::fromStdString( selectedOption1.toStdString()+" ------>"+selectedOption2.toStdString()));
-      if(selectedOption1.isEmpty()||selectedOption2.isEmpty())
-      {
-          ui->resultText->setText(QString::fromStdString("please choose the start city"));
-          return ;
-      }
-      ui->resultText->setText(QString::fromStdString(g.DijkstraDistance(selectedOption1.toStdString(),selectedOption2.toStdString())));
+    QString selectedOption1 = ui->FirstCityCmb->currentText();
+    QString selectedOption2 = ui->secondCityCmb->currentText();
+    ui->chosenCities->setText(selectedOption1 + " → " + selectedOption2);
+    if (selectedOption1.isEmpty() || selectedOption2.isEmpty()) {
+        ui->resultText->setText("Please choose both cities");
+        return;
+    }
+    ui->resultText->setText(QString::fromStdString(
+        currentGraph.DijkstraDistance(selectedOption1.toStdString(), selectedOption2.toStdString())
+    ));
 }
 
 
