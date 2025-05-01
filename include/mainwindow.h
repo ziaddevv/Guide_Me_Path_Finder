@@ -5,7 +5,9 @@
 #include <vector>
 #include "graph.hpp"
 #include "filehandler.hpp"
-
+#include "cityexplorer.h"
+#include "qmessagebox.h"
+using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -26,10 +28,14 @@ private slots:
     void on_dijkstraBtn_clicked();
     void onMapSelectionChanged(int index);
 
+    void on_exploreButton_clicked();
+
 private:
     void updateCityComboBoxes();
     Ui::MainWindow *ui;
-    std::vector<Graph> graphs;  // Stores all loaded graphs
-    Graph currentGraph;         // Currently selected graph
+    std::vector<Graph> graphs;
+       // Stores all loaded graphs
+    Graph currentGraph;
+            // Currently selected graph
 };
 #endif // MAINWINDOW_H

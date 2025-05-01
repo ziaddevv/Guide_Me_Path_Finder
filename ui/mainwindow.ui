@@ -175,6 +175,19 @@
      <string>Choose a Map</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="exploreButton">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>480</y>
+      <width>100</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>explore city</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -182,7 +195,7 @@
      <x>0</x>
      <y>0</y>
      <width>1120</width>
-     <height>21</height>
+     <height>29</height>
     </rect>
    </property>
   </widget>

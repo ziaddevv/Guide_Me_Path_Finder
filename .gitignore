@@ -17,7 +17,7 @@ build/
 .vscode/
 .idea/
 *.pro.user
-
+*.pro.user.*
 # Ignore log files
 *.log
 

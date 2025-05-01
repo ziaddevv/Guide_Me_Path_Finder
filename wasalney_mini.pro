@@ -6,18 +6,22 @@ CONFIG += c++17
 INCLUDEPATH += include
 
 SOURCES += \
+    src/city.cpp \
+    src/cityexplorer.cpp \
     src/filehandler.cpp \
     src/graph.cpp \
     src/main.cpp \
     src/mainwindow.cpp
 
 HEADERS += \
+    include/city.hpp \
+    include/cityexplorer.h \
     include/filehandler.hpp \
     include/graph.hpp \
     include/mainwindow.h
 
-
 FORMS += \
+    ui/cityexplorer.ui \
     ui/mainwindow.ui
 
 # Default rules for deployment.

@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     Filehandler f;
-    f.ReadGraphFromFile("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
+    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+
     graphs = f.graphs;
 
     // Populate map selection combo box
@@ -31,6 +32,23 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+void MainWindow::on_exploreButton_clicked()
+{
+    Filehandler f;
+    f.ReadCityGraphsFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\CitiesGraphs.txt");
+    QString selectedCityName = ui->secondCityCmb->currentText(); // example: dropdown
+
+    // Corrected the parentheses issue here
+    ui->resultText2->setText(selectedCityName);
+    if (f.citiesGraphs.find(selectedCityName.toStdString()) != f.citiesGraphs.end()) {
+        CityExplorer* explorer = new CityExplorer(this);
+        explorer->setCityData(f.citiesGraphs[selectedCityName.toStdString()]);
+        explorer->exec();  // or show() if you want it modeless
+    } else {
+        QMessageBox::warning(this, "Error", "City not found!");
+    }
+}
+
 
 void MainWindow::onMapSelectionChanged(int index)
 {
@@ -70,6 +88,8 @@ void MainWindow::on_bfsBtn_clicked()
         return;
     }
     ui->resultText2->setText(QString::fromStdString(currentGraph.BFS(selectedOption.toStdString())));
+
+
 }
 
 void MainWindow::on_dfsBtn_clicked()
@@ -150,3 +170,6 @@ void MainWindow::on_dijkstraBtn_clicked()
 // g.addEdge("Minya", "Cairo", 240.0, 4.0);
 // g.addEdge("PortSaid", "Suez", 100.0, 1.5);
 // g.addEdge("Luxor", "Tanta", 600.0, 7.5);
+
+
+
