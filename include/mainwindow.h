@@ -7,6 +7,11 @@
 #include "filehandler.hpp"
 #include "cityexplorer.h"
 #include "qmessagebox.h"
+#include  "QGraphicsScene"
+#include "QGraphicsView"
+#include"QGraphicsEllipseItem"
+#include "QGraphicsLineItem"
+#include "set"
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -37,5 +42,6 @@ private:
        // Stores all loaded graphs
     Graph currentGraph;
             // Currently selected graph
+     Filehandler f;
 };
 #endif // MAINWINDOW_H

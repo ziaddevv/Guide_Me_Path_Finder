@@ -6,13 +6,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    Filehandler f;
-    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
-
-    graphs = f.graphs;
+     this->f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+     f.ReadCityGraphsFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\CitiesGraphs.txt");
+     graphs = f.graphs;
 
     // Populate map selection combo box
+     ui->MapSelectionCmb->addItem(QString::fromStdString(""));
     for (const auto& graph : graphs) {
         ui->MapSelectionCmb->addItem(QString::fromStdString(graph.name));
     }
@@ -26,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
         currentGraph = graphs[0];
         updateCityComboBoxes();
     }
+    // In mainwindow.cpp
+
 }
 
 MainWindow::~MainWindow()
@@ -34,8 +35,7 @@ MainWindow::~MainWindow()
 }
 void MainWindow::on_exploreButton_clicked()
 {
-    Filehandler f;
-    f.ReadCityGraphsFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\CitiesGraphs.txt");
+
     QString selectedCityName = ui->secondCityCmb->currentText(); // example: dropdown
 
     // Corrected the parentheses issue here
@@ -52,11 +52,54 @@ void MainWindow::on_exploreButton_clicked()
 
 void MainWindow::onMapSelectionChanged(int index)
 {
-    if (index >= 0 && index < static_cast<int>(graphs.size())) {
-        currentGraph = graphs[index];
+    if (index > 0 && index < static_cast<int>(graphs.size()+1)) {
+        currentGraph = graphs[index-1];
         updateCityComboBoxes();
+
+
+        QGraphicsScene* scene = new QGraphicsScene(this);
+        scene->setBackgroundBrush(Qt::lightGray);
+        ui->graphicsView->setScene(scene);
+
+
+        std::map<std::string, QPointF> positions;
+        int x = 50, y = 50;
+
+        // Draw nodes (cities)
+        for (const auto& city : currentGraph.getAllCities()) {
+            QPointF pos(x, y);
+            positions[city] = pos;
+
+
+            QGraphicsEllipseItem* ellipse = scene->addEllipse(x, y, 30, 30, QPen(Qt::black), QBrush(Qt::cyan));
+
+            QGraphicsTextItem* label = scene->addText(QString::fromStdString(city));
+            label->setPos(x - 5, y + 35);
+
+            x += 100;
+            if (x > 600) { x = 50; y += 100; }
+        }
+
+
+        set<pair<string, string>> drawn;
+        for (const auto& city : currentGraph.getAllCities()) {
+            for (const auto& [neighbor, edgeData] : currentGraph.adj[city]) {
+                if (drawn.count({neighbor, city}) == 0) {
+                    QPointF from = positions[city];
+                    QPointF to = positions[neighbor];
+                    scene->addLine(from.x() + 15, from.y() + 15, to.x() + 15, to.y() + 15, QPen(Qt::black));
+
+                    // Add distance label
+                    QPointF mid = (from + to) / 2;
+                    scene->addText(QString::number(edgeData.first) + " km")->setPos(mid);
+
+                    drawn.insert({city, neighbor});
+                }
+            }
+        }
     }
 }
+
 
 void MainWindow::updateCityComboBoxes()
 {
