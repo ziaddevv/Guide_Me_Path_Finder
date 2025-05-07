@@ -1,7 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include<math.h>
 #include <QMainWindow>
+#include "graphviewitems.hpp"
 #include <vector>
 #include "graph.hpp"
 #include "filehandler.hpp"
@@ -32,7 +33,7 @@ private slots:
     void on_dfsBtn_clicked();
     void on_dijkstraBtn_clicked();
     void onMapSelectionChanged(int index);
-
+    void ShowMap(int index);
     void on_exploreButton_clicked();
 
 private:

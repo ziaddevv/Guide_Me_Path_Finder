@@ -18,6 +18,7 @@ HEADERS += \
     include/cityexplorer.h \
     include/filehandler.hpp \
     include/graph.hpp \
+    include/graphviewitems.hpp \
     include/mainwindow.h
 
 FORMS += \
