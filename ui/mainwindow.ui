@@ -60,45 +60,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="bfsBtn">
-    <property name="geometry">
-     <rect>
-      <x>1220</x>
-      <y>140</y>
-      <width>100</width>
-      <height>33</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>BFS</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="dfsBtn">
-    <property name="geometry">
-     <rect>
-      <x>1220</x>
-      <y>200</y>
-      <width>100</width>
-      <height>33</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>DFS</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="dijkstraBtn">
-    <property name="geometry">
-     <rect>
-      <x>1220</x>
-      <y>90</y>
-      <width>100</width>
-      <height>33</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Dijkstra</string>
-    </property>
-   </widget>
    <widget class="QComboBox" name="MapSelectionCmb">
     <property name="geometry">
      <rect>

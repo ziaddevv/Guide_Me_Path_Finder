@@ -6,28 +6,23 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-     this->f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
-     f.ReadCityGraphsFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\CitiesGraphs.txt");
-     graphs = f.graphs;
 
 
-     ui->MapSelectionCmb->addItem(QString::fromStdString(""));
-    for (const auto& graph : graphs) {
+    ui->MapSelectionCmb->addItem("");
+    for (const auto& graph : program.graphs) {
         ui->MapSelectionCmb->addItem(QString::fromStdString(graph.name));
-   }
-
+    }
 
 
     connect(ui->MapSelectionCmb, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::onMapSelectionChanged);
 
 
-    if (!graphs.empty()) {
-        currentGraph = graphs[0];
+    if (!program.graphs.empty()) {
+        program.currentGraph = &program.graphs[0];
         updateCityComboBoxes();
-        ShowMap(0);// this is the default one
+        ShowMap(0);
     }
-
 }
 
 MainWindow::~MainWindow()
@@ -37,17 +32,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_exploreButton_clicked()
 {
 
-    QString selectedCityName = ui->secondCityCmb->currentText();
 
-    // Corrected the parentheses issue here
-    //ui->resultText2->setText(selectedCityName);
-    if (f.citiesGraphs.find(selectedCityName.toStdString()) != f.citiesGraphs.end()) {
-        CityExplorer* explorer = new CityExplorer(this);
-        explorer->setCityData(f.citiesGraphs[selectedCityName.toStdString()]);
-        explorer->exec();  // or show() if you want it modeless
-    } else {
-        QMessageBox::warning(this, "Error", "City not found!");
-    }
 }
 float max(float a,double b)
 {
@@ -58,8 +43,8 @@ float max(float a,double b)
 }
 void MainWindow::ShowMap(int index)
 {
-    if (index > 0 && index < static_cast<int>(graphs.size()+1)) {
-        currentGraph = graphs[index-1];
+    if (index > 0 && index < static_cast<int>(program.graphs.size()+1)) {
+        program.currentGraph = &program.graphs[index-1];
         updateCityComboBoxes();
         QGraphicsScene* scene = new QGraphicsScene(this);
         scene->setBackgroundBrush(Qt::lightGray);
@@ -70,7 +55,7 @@ void MainWindow::ShowMap(int index)
         std::map<std::string, QPointF> velocities;
 
         // Initialize cities with spread-out positions
-        int cityCount = currentGraph.getAllCities().size();
+        int cityCount = program.currentGraph->getAllCities().size();
         if (cityCount > 0) {
             // Create initial positions in a circle for better starting distribution
             double radius = std::min(ui->graphicsView->width(), ui->graphicsView->height()) * 0.35;
@@ -78,7 +63,7 @@ void MainWindow::ShowMap(int index)
             double centerY = ui->graphicsView->height() / 2.0;
 
             int i = 0;
-            for (const auto& city : currentGraph.getAllCities()) {
+            for (const auto& city : program.currentGraph->getAllCities()) {
                 // Position cities in a circle
                 double angle = 2.0 * M_PI * i / cityCount;
                 double x = centerX + radius * std::cos(angle);
@@ -92,8 +77,8 @@ void MainWindow::ShowMap(int index)
         // Calculate the average edge distance to use for scaling
         double totalDistance = 0.0;
         int edgeCount = 0;
-        for (const auto& city : currentGraph.getAllCities()) {
-            for (const auto& [neighbor, edgeData] : currentGraph.adj[city]) {
+        for (const auto& city : program.currentGraph->getAllCities()) {
+            for (const auto& [neighbor, edgeData] : program.currentGraph->adj[city]) {
                 totalDistance += edgeData.first;
                 edgeCount++;
             }
@@ -112,13 +97,13 @@ void MainWindow::ShowMap(int index)
             std::map<std::string, QPointF> forces;
 
             // Initialize forces to zero
-            for (const auto& city : currentGraph.getAllCities()) {
+            for (const auto& city : program.currentGraph->getAllCities()) {
                 forces[city] = QPointF(0, 0);
             }
 
             // Apply repulsive forces between all nodes
-            for (const auto& city1 : currentGraph.getAllCities()) {
-                for (const auto& city2 : currentGraph.getAllCities()) {
+            for (const auto& city1 : program.currentGraph->getAllCities()) {
+                for (const auto& city2 : program.currentGraph->getAllCities()) {
                     if (city1 != city2) {
                         QPointF delta = positions[city1] - positions[city2];
                         double distance = std::sqrt(delta.x() * delta.x() + delta.y() * delta.y());
@@ -138,8 +123,8 @@ void MainWindow::ShowMap(int index)
             }
 
             // Apply spring forces for edges
-            for (const auto& city : currentGraph.getAllCities()) {
-                for (const auto& [neighbor, edgeData] : currentGraph.adj[city]) {
+            for (const auto& city : program.currentGraph->getAllCities()) {
+                for (const auto& [neighbor, edgeData] : program.currentGraph->adj[city]) {
                     QPointF delta = positions[city] - positions[neighbor];
                     double distance = std::sqrt(delta.x() * delta.x() + delta.y() * delta.y());
                     if (distance < 1.0) distance = 1.0;
@@ -160,7 +145,7 @@ void MainWindow::ShowMap(int index)
             // Add a small force toward the center to prevent flying away
             double centerX = ui->graphicsView->width() / 2.0;
             double centerY = ui->graphicsView->height() / 2.0;
-            for (const auto& city : currentGraph.getAllCities()) {
+            for (const auto& city : program.currentGraph->getAllCities()) {
                 QPointF toCenter = QPointF(centerX, centerY) - positions[city];
                 double dist = std::sqrt(toCenter.x() * toCenter.x() + toCenter.y() * toCenter.y());
                 if (dist > 300) { // Only apply if far from center
@@ -170,7 +155,7 @@ void MainWindow::ShowMap(int index)
 
             // Update positions and velocities
             double maxSpeed = (iter < ITERATIONS / 2) ? 10.0 : 5.0; // Lower max speed later
-            for (const auto& city : currentGraph.getAllCities()) {
+            for (const auto& city : program.currentGraph->getAllCities()) {
                 velocities[city] = (velocities[city] + forces[city]) * DAMPING;
 
                 // Limit maximum velocity
@@ -231,7 +216,7 @@ void MainWindow::ShowMap(int index)
         }
 
         // Draw nodes (cities)
-        for (const auto& city : currentGraph.getAllCities()) {
+        for (const auto& city : program.currentGraph->getAllCities()) {
             QPointF pos = positions[city];
             CityNode* node = new CityNode(QRectF(pos.x()-15, pos.y()-15, 30, 30), QString::fromStdString(city));
             scene->addItem(node);
@@ -241,8 +226,8 @@ void MainWindow::ShowMap(int index)
 
         // Draw edges
         std::set<std::pair<std::string, std::string>> drawn;
-        for (const auto& city : currentGraph.getAllCities()) {
-            for (const auto& [neighbor, edgeData] : currentGraph.adj[city]) {
+        for (const auto& city : program.currentGraph->getAllCities()) {
+            for (const auto& [neighbor, edgeData] : program.currentGraph->adj[city]) {
                 if (drawn.count({neighbor, city}) == 0) {
                     QPointF from = positions[city];
                     QPointF to = positions[neighbor];
@@ -280,113 +265,21 @@ void MainWindow::updateCityComboBoxes()
     // Clear existing items
     ui->FirstCityCmb->clear();
     ui->secondCityCmb->clear();
-   // ui->StartcityCmb->clear();
+    // ui->StartcityCmb->clear();
 
     // Add empty default item
     ui->FirstCityCmb->addItem("");
     ui->secondCityCmb->addItem("");
-   // ui->StartcityCmb->addItem("");
+    // ui->StartcityCmb->addItem("");
 
     // Get cities from current graph
-    vector<string> cities = currentGraph.getAllCities();
+    vector<string> cities = program.currentGraph->getAllCities();
     for (const auto& city : cities) {
         ui->FirstCityCmb->addItem(QString::fromStdString(city));
         ui->secondCityCmb->addItem(QString::fromStdString(city));
-       // ui->StartcityCmb->addItem(QString::fromStdString(city));
+        // ui->StartcityCmb->addItem(QString::fromStdString(city));
     }
 }
-
-void MainWindow::on_bfsBtn_clicked()
-{
-   // // ui->resultText2->clear();
-   // / QString selectedOption = ui->StartcityCmb->currentText();
-   //  if (selectedOption.isEmpty()) {
-   //     // ui->resultText2->setText("Please choose the start city");
-   //      return;
-   //  }
-   // // ui->resultText2->setText(QString::fromStdString(currentGraph.BFS(selectedOption.toStdString())));
-
-
-}
-
-void MainWindow::on_dfsBtn_clicked()
-{
-   // // ui->resultText2->clear();
-   //  //QString selectedOption = ui->StartcityCmb->currentText();
-   //  if (selectedOption.isEmpty()) {
-   //   //   ui->resultText2->setText("Please choose the start city");
-   //      return;
-   //  }
-   // // ui->resultText2->setText(QString::fromStdString(currentGraph.DFS(selectedOption.toStdString())));
-}
-
-void MainWindow::on_dijkstraBtn_clicked()
-{
-   // ui->resultText->clear();
-   //  QString selectedOption1 = ui->FirstCityCmb->currentText();
-   //  QString selectedOption2 = ui->secondCityCmb->currentText();
-   //  //ui->chosenCities->setText(selectedOption1 + " → " + selectedOption2);
-   //  if (selectedOption1.isEmpty() || selectedOption2.isEmpty()) {
-   //  //    ui->resultText->setText("Please choose both cities");
-   //      return;
-   //  }
-   // // ui->resultText->setText(QString::fromStdString(
-   //      //currentGraph.DijkstraDistance(selectedOption1.toStdString(), selectedOption2.toStdString())
-   //  ));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////
-// Add cities
-// g.addCity("Cairo");
-// g.addCity("Giza");
-// g.addCity("Alexandria");
-// g.addCity("Aswan");
-// g.addCity("Luxor");
-// g.addCity("SharmElSheikh");
-// g.addCity("Tanta");
-// g.addCity("PortSaid");
-// g.addCity("Suez");
-// g.addCity("MarsaMatruh");
-// g.addCity("Fayoum");
-// g.addCity("Minya");
-
-// // Add edges with distance (in km) and time (in hours)
-// g.addEdge("Cairo", "Giza", 20.0, 0.5);
-// g.addEdge("Cairo", "Alexandria", 220.0, 2.5);
-// g.addEdge("Cairo", "Luxor", 650.0, 8.0);
-// g.addEdge("Aswan", "Luxor", 200.0, 3.0);
-// g.addEdge("SharmElSheikh", "Cairo", 500.0, 7.0);
-// g.addEdge("Tanta", "Cairo", 100.0, 1.5);
-// g.addEdge("PortSaid", "Cairo", 150.0, 2.0);
-// g.addEdge("Suez", "Cairo", 130.0, 2.0);
-// g.addEdge("MarsaMatruh", "Alexandria", 240.0, 3.5);
-// g.addEdge("Fayoum", "Cairo", 130.0, 2.0);
-// g.addEdge("Minya", "Cairo", 240.0, 4.0);
-// g.addEdge("PortSaid", "Suez", 100.0, 1.5);
-// g.addEdge("Luxor", "Tanta", 600.0, 7.5);
 
 
 

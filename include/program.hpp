@@ -11,7 +11,7 @@ public:
     Filehandler f;
     std::vector<Graph> graphs;
         // Stores all loaded graphs
-    Graph currentGraph;
+    Graph* currentGraph = nullptr;
     void addGraph(string name);
 
 };

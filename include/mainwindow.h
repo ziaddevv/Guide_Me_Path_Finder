@@ -13,6 +13,7 @@
 #include"QGraphicsEllipseItem"
 #include "QGraphicsLineItem"
 #include "set"
+#include "program.hpp"
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,9 +30,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_bfsBtn_clicked();
-    void on_dfsBtn_clicked();
-    void on_dijkstraBtn_clicked();
     void onMapSelectionChanged(int index);
     void ShowMap(int index);
     void on_exploreButton_clicked();
@@ -39,10 +37,6 @@ private slots:
 private:
     void updateCityComboBoxes();
     Ui::MainWindow *ui;
-    std::vector<Graph> graphs;
-       // Stores all loaded graphs
-    Graph currentGraph;
-            // Currently selected graph
-     Filehandler f;
+    Program program;
 };
 #endif // MAINWINDOW_H

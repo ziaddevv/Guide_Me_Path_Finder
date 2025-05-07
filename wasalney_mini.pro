@@ -6,6 +6,7 @@ CONFIG += c++17
 INCLUDEPATH += include
 
 SOURCES += \
+    src/program.cpp \
     src/city.cpp \
     src/cityexplorer.cpp \
     src/filehandler.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     src/mainwindow.cpp
 
 HEADERS += \
+    include/program.hpp \
     include/city.hpp \
     include/cityexplorer.h \
     include/filehandler.hpp \
