@@ -12,8 +12,12 @@
 #include "QGraphicsView"
 #include"QGraphicsEllipseItem"
 #include "QGraphicsLineItem"
+#include"QLineEdit"
+#include"QInputDialog"
 #include "set"
 #include "program.hpp"
+#include"ui_exploremap.h"
+#include"exploremap.h"
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,6 +37,11 @@ private slots:
     void onMapSelectionChanged(int index);
     void ShowMap(int index);
     void on_exploreButton_clicked();
+
+    void on_addGraphButton_clicked();
+
+    void on_deleteGraphButton_clicked();
+    void updateGraphComboBox();
 
 private:
     void updateCityComboBoxes();

@@ -12,7 +12,8 @@ SOURCES += \
     src/filehandler.cpp \
     src/graph.cpp \
     src/main.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/exploremap.cpp
 
 HEADERS += \
     include/program.hpp \
@@ -21,10 +22,12 @@ HEADERS += \
     include/filehandler.hpp \
     include/graph.hpp \
     include/graphviewitems.hpp \
-    include/mainwindow.h
+    include/mainwindow.h \
+    include/exploremap.h
 
 FORMS += \
     ui/cityexplorer.ui \
+    ui/exploremap.ui \
     ui/mainwindow.ui
 
 # Default rules for deployment.

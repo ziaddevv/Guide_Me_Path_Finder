@@ -32,6 +32,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_exploreButton_clicked()
 {
 
+    ExploreMap *exploreMap=new ExploreMap(this);
+    exploreMap->setAttribute(Qt::WA_DeleteOnClose);
+
+    exploreMap->show();
 
 }
 float max(float a,double b)
@@ -282,4 +286,47 @@ void MainWindow::updateCityComboBoxes()
 }
 
 
+
+
+void MainWindow::on_addGraphButton_clicked()
+{
+    bool ok;
+    QString name = QInputDialog::getText(this, tr("Add New Graph"),
+                                         tr("Graph name:"), QLineEdit::Normal,
+                                         "", &ok);
+    if (ok && !name.isEmpty()) {
+        program.addGraph(name.toStdString());
+        updateGraphComboBox();  // Refresh the graph list in the UI
+        QMessageBox::information(this, "Graph Added", "Graph added successfully.");
+    }
+}
+
+void MainWindow::updateGraphComboBox() {
+    ui->MapSelectionCmb->clear();
+    ui->MapSelectionCmb->addItem("");
+    for (const auto& g : program.graphs) {
+        ui->MapSelectionCmb->addItem(QString::fromStdString(g.name));
+    }
+}
+
+void MainWindow::on_deleteGraphButton_clicked()
+{
+    QString name = ui->MapSelectionCmb->currentText();
+    if (name.isEmpty()) return;
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Delete Graph",
+                                  "Are you sure you want to delete the graph '" + name + "'?",
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        bool deleted = program.deleteGraph(name.toStdString());
+        if (deleted) {
+            updateGraphComboBox();
+            ui->graphicsView->scene()->clear();
+            QMessageBox::information(this, "Deleted", "Graph deleted.");
+        } else {
+            QMessageBox::warning(this, "Error", "Graph not found.");
+        }
+    }
+}
 

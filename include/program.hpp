@@ -1,19 +1,23 @@
 #ifndef PROGRAM_HPP
 #define PROGRAM_HPP
-#include"filehandler.hpp"
-#include"vector"
 
-using namespace std;
-class Program
-{
+#include "filehandler.hpp"
+#include <vector>
+#include <string>
+
+class Program {
 public:
     Program();
+
+    void loadGraphs();
+    void addGraph(const std::string& name);
+    bool deleteGraph(const std::string& name);
+    Graph* getGraphByName(const std::string& name);
+    void setCurrentGraph(const std::string& name);
+
     Filehandler f;
     std::vector<Graph> graphs;
-        // Stores all loaded graphs
     Graph* currentGraph = nullptr;
-    void addGraph(string name);
-
 };
 
 #endif // PROGRAM_HPP

@@ -53,7 +53,7 @@
    <widget class="QComboBox" name="secondCityCmb">
     <property name="geometry">
      <rect>
-      <x>1150</x>
+      <x>1140</x>
       <y>10</y>
       <width>131</width>
       <height>32</height>
@@ -63,7 +63,7 @@
    <widget class="QComboBox" name="MapSelectionCmb">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>400</x>
       <y>0</y>
       <width>201</width>
       <height>41</height>
@@ -86,14 +86,17 @@
    <widget class="QPushButton" name="exploreButton">
     <property name="geometry">
      <rect>
-      <x>1220</x>
-      <y>260</y>
-      <width>100</width>
+      <x>1230</x>
+      <y>90</y>
+      <width>111</width>
       <height>33</height>
      </rect>
     </property>
     <property name="text">
-     <string>explore city</string>
+     <string>Explore graph</string>
+    </property>
+    <property name="autoDefault">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QGraphicsView" name="graphicsView">
@@ -104,6 +107,32 @@
       <width>1081</width>
       <height>541</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addGraphButton">
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>170</y>
+      <width>111</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Graph</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="deleteGraphButton">
+    <property name="geometry">
+     <rect>
+      <x>1229</x>
+      <y>240</y>
+      <width>121</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete Graph</string>
     </property>
    </widget>
   </widget>
