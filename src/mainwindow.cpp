@@ -18,11 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onMapSelectionChanged);
 
 
-    if (!program.graphs.empty()) {
-        program.currentGraph = &program.graphs[0];
-        updateCityComboBoxes();
-        ShowMap(0);
-    }
+    // if (!program.graphs.empty()) {
+    //     program.currentGraph = &program.graphs[0];
+    //     updateCityComboBoxes();
+    //     ShowMap(0);
+    // }
+    updateCityComboBoxes();
+    ShowMap(0);
 }
 
 MainWindow::~MainWindow()
@@ -32,9 +34,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_exploreButton_clicked()
 {
 
-    ExploreMap *exploreMap=new ExploreMap(this);
+    ExploreMap* exploreMap = new ExploreMap(&program, this);
     exploreMap->setAttribute(Qt::WA_DeleteOnClose);
-
     exploreMap->show();
 
 }
@@ -47,7 +48,11 @@ float max(float a,double b)
 }
 void MainWindow::ShowMap(int index)
 {
-    if (index > 0 && index < static_cast<int>(program.graphs.size()+1)) {
+    if(index==0)
+    {
+         program.currentGraph = NULL;
+    }
+    else if (index > 0 && index < static_cast<int>(program.graphs.size()+1)) {
         program.currentGraph = &program.graphs[index-1];
         updateCityComboBoxes();
         QGraphicsScene* scene = new QGraphicsScene(this);
