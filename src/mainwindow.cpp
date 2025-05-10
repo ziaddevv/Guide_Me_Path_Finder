@@ -18,13 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onMapSelectionChanged);
 
 
-    // if (!program.graphs.empty()) {
-    //     program.currentGraph = &program.graphs[0];
-    //     updateCityComboBoxes();
-    //     ShowMap(0);
-    // }
-    updateCityComboBoxes();
-    ShowMap(0);
+    if (!program.graphs.empty()) {
+        program.currentGraph = &program.graphs[0];
+        updateCityComboBoxes();
+        ShowMap(0);
+    }
+    // updateCityComboBoxes();
+    // ShowMap(0);
 }
 
 MainWindow::~MainWindow()
