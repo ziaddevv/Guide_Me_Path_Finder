@@ -44,7 +44,7 @@ private slots:
     void updateGraphComboBox();
 
 private:
-    void updateCityComboBoxes();
+
     Ui::MainWindow *ui;
     Program program;
 };

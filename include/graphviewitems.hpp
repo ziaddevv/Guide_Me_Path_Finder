@@ -37,7 +37,7 @@ public:
 
     EdgeLine(const QLineF& line, const QString& from, const QString& to)
         : QGraphicsLineItem(line), fromCity(from), toCity(to) {
-        setPen(QPen(Qt::red, 5));
+        setPen(QPen(Qt::red, 3));
         setAcceptHoverEvents(true);
         setFlag(QGraphicsItem::ItemIsSelectable);
     }

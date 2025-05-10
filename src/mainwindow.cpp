@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (!program.graphs.empty()) {
         program.currentGraph = &program.graphs[0];
-        updateCityComboBoxes();
+
         ShowMap(0);
     }
     // updateCityComboBoxes();
@@ -59,9 +59,9 @@ void MainWindow::ShowMap(int index)
     }
     else if (index > 0 && index < static_cast<int>(program.graphs.size()+1)) {
         program.currentGraph = &program.graphs[index-1];
-        updateCityComboBoxes();
+
         QGraphicsScene* scene = new QGraphicsScene(this);
-        scene->setBackgroundBrush(Qt::lightGray);
+        scene->setBackgroundBrush(Qt::black);
         ui->graphicsView->setScene(scene);
 
         // Force-directed layout setup
@@ -274,26 +274,7 @@ void MainWindow::onMapSelectionChanged(int index)
 }
 
 
-void MainWindow::updateCityComboBoxes()
-{
-    // Clear existing items
-    ui->FirstCityCmb->clear();
-    ui->secondCityCmb->clear();
-    // ui->StartcityCmb->clear();
 
-    // Add empty default item
-    ui->FirstCityCmb->addItem("");
-    ui->secondCityCmb->addItem("");
-    // ui->StartcityCmb->addItem("");
-
-    // Get cities from current graph
-    vector<string> cities = program.currentGraph->getAllCities();
-    for (const auto& city : cities) {
-        ui->FirstCityCmb->addItem(QString::fromStdString(city));
-        ui->secondCityCmb->addItem(QString::fromStdString(city));
-        // ui->StartcityCmb->addItem(QString::fromStdString(city));
-    }
-}
 
 
 

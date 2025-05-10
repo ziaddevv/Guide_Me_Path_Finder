@@ -180,7 +180,7 @@ void ExploreMap::on_insertEdge_clicked() {
         return;
     }
 
-    program->currentGraph->addEdge(city1.toStdString(), city2.toStdString(), time, distance);
+    program->currentGraph->addEdge(city1.toStdString(), city2.toStdString(), distance, time);
 
     QMessageBox::information(this, "Success", "Edge inserted successfully.");
 

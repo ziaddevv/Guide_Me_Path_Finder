@@ -1,4 +1,4 @@
-3
+4
 MapOfEgypt
 Cairo Alexandria 220 2.5
 Cairo Giza 20 0.5
@@ -14,6 +14,16 @@ Minya Cairo 240 4.0
 PortSaid Suez 100 1.5
 Luxor Tanta 600 7.5
 Alexandria MarsaMatruh 280 3.0
+#
+newMap
+a b 50 10
+a c 25 10
+a d 25 10
+b d 25 10
+b c 60 10
+c e 50 10
+e d 60 10
+a e 25 10
 #
 MapOfEurope
 Paris Berlin 1050 11.0
