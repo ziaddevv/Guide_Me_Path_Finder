@@ -5,8 +5,8 @@ Program::Program() {
 }
 
 void Program::loadGraphs() {
-    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
-    f.ReadCityGraphsFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\CitiesGraphs.txt");
+    f.ReadGraphFromFile("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
+    f.ReadCityGraphsFromFile("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\CitiesGraphs.txt");
     graphs = f.graphs;
 }
 

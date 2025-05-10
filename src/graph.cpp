@@ -2,7 +2,7 @@
 
 
 void Graph::addCity(const string& name) {
-    if (adj.find(name) == adj.end()) {
+    if (containsCity(name)) {
         numberOfCities++;
     }
     adj[name];
@@ -27,15 +27,12 @@ void Graph::addEdge(const string& src, const string& dest, double distance, doub
     if (src == dest) return;
     if (distance < 0) distance *= -1;
     if (time < 0) time *= -1;
-    for (auto& edge : adj[src]) {
-        if (edge.first == dest && edge.second.first == distance && edge.second.second == time) return;  // Skip duplicates
-    }
     adj[src][dest] = {distance, time};
     adj[dest][src] = {distance, time};
 }
 
 void Graph::deleteCity(const string& name) {
-    if (adj.find(name) == adj.end()) return;
+    if (!containsCity(name)) return;
     for (auto& [city, neighbors] : adj) {
         neighbors.erase(name);
     }
@@ -44,27 +41,45 @@ void Graph::deleteCity(const string& name) {
 }
 
 void Graph::deleteEdge(const string& src, const string& dest) {
-    if (adj.find(src) == adj.end() || adj.find(dest) == adj.end()) return;
+    if (!containsEdge(src, dest)) return;
     adj[src].erase(dest);
     adj[dest].erase(src);
 }
 
-string Graph::BFS(const string& start) {
-    if (adj.find(start) == adj.end()) return "";
+bool Graph::containsCity(const string& name){
+    return(adj.find(name) != adj.end());
+}
 
-    unordered_set<string> visited;
-    queue<string> q;
-    string result;
+bool Graph::containsEdge(const string& city1, const string& city2) {
+    if (containsCity(city1) && adj[city1].find(city2) != adj[city1].end()) {
+        return true;
+    }
+
+    if (containsCity(city2) && adj[city2].find(city1) != adj[city2].end()) {
+        return true;
+    }
+
+    return false;
+}
+
+
+std::vector<std::string> Graph::BFS(const std::string& start) {
+    std::vector<std::string> result;
+
+    if (!containsCity(start)) return result;
+
+    std::unordered_set<std::string> visited;
+    std::queue<std::string> q;
 
     q.push(start);
     visited.insert(start);
 
     while (!q.empty()) {
-        string city = q.front();
+        std::string city = q.front();
         q.pop();
-        result += city + " --> ";
+        result.push_back(city);
 
-        for (auto& [neighbor, _] : adj[city]) {
+        for (const auto& [neighbor, _] : adj[city]) {
             if (visited.find(neighbor) == visited.end()) {
                 visited.insert(neighbor);
                 q.push(neighbor);
@@ -72,77 +87,70 @@ string Graph::BFS(const string& start) {
         }
     }
 
-    // Remove the trailing " --> " if the result is not empty
-    if (!result.empty()) {
-        result = result.substr(0, result.size() - 5);
-    }
-
     return result;
 }
 
-string Graph::DFS(const string& start) {
-    if (adj.find(start) == adj.end()) return "";
+std::vector<std::string> Graph::DFS(const std::string& start) {
+    std::vector<std::string> result;
 
-    unordered_set<string> visited;
-    stack<string> st;
-    string result;
+    if (!containsCity(start)) return result;
+
+    std::unordered_set<std::string> visited;
+    std::stack<std::string> st;
 
     st.push(start);
 
     while (!st.empty()) {
-        string city = st.top();
+        std::string city = st.top();
         st.pop();
 
         if (visited.find(city) == visited.end()) {
             visited.insert(city);
-            result += city + " --> ";
+            result.push_back(city);
 
-            for (auto& [neighbor, _] : adj[city]) {
+            for (const auto& [neighbor, _] : adj[city]) {
                 if (visited.find(neighbor) == visited.end()) {
                     st.push(neighbor);
                 }
             }
-        }
-    }
 
-    // Remove the trailing " --> " if the result is not empty
-    if (!result.empty()) {
-        result = result.substr(0, result.size() - 5);
+        }
     }
 
     return result;
 }
 
-string Graph::DijkstraDistance(const string& start, const string& destination) {
+std::vector<std::string> Graph::DijkstraDistance(const std::string& start, const std::string& destination) {
+    std::vector<std::string> result;
 
-    if (adj.find(start) == adj.end() || adj.find(destination) == adj.end()) {
-        return "Path not found";
+    if (!containsCity(start) || !containsCity(destination)) {
+        return result;
     }
 
+    std::unordered_map<std::string, double> minDistance;
+    std::unordered_map<std::string, std::string> previous;
+    std::priority_queue<std::pair<double, std::string>,
+                        std::vector<std::pair<double, std::string>>,
+                        std::greater<>> pq;
 
-    unordered_map<string, double> minDistance;
-    unordered_map<string, string> previous;
-    priority_queue<pair<double, string>,
-                   vector<pair<double, string>>,
-                   greater<>> pq;
-
-
-    for (auto& cityPair : adj) {
-        minDistance[cityPair.first] = numeric_limits<double>::infinity();
+    for (const auto& cityPair : adj) {
+        minDistance[cityPair.first] = std::numeric_limits<double>::infinity();
     }
+
     minDistance[start] = 0.0;
     pq.push({0.0, start});
-
 
     while (!pq.empty()) {
         auto [distSoFar, city] = pq.top();
         pq.pop();
+
         if (distSoFar > minDistance[city]) continue;
         if (city == destination) break;
 
-        for (auto& [neighbor, data] : adj[city]) {
+        for (const auto& [neighbor, data] : adj[city]) {
             double edgeDist = data.first;
             double newDist = distSoFar + edgeDist;
+
             if (newDist < minDistance[neighbor]) {
                 minDistance[neighbor] = newDist;
                 previous[neighbor] = city;
@@ -151,49 +159,53 @@ string Graph::DijkstraDistance(const string& start, const string& destination) {
         }
     }
 
-
-    if (minDistance[destination] == numeric_limits<double>::infinity()) {
-        return "Path not found";
+    if (minDistance[destination] == std::numeric_limits<double>::infinity()) {
+        return result;
     }
 
-
-    vector<string> path;
-    for (string cur = destination; ; cur = previous[cur]) {
+    // Reconstruct path
+    std::vector<std::string> path;
+    for (std::string cur = destination; ; cur = previous[cur]) {
         path.push_back(cur);
         if (cur == start) break;
     }
-    reverse(path.begin(), path.end());
+    std::reverse(path.begin(), path.end());
 
+    for (size_t i = 0; i < path.size(); ++i) {
+        result.push_back(path[i]);
+        if (i + 1 < path.size()) {
+            result.push_back("-->");
+        }
+    }
 
+    // Calculate time
     double totalTime = 0.0;
     for (size_t i = 0; i + 1 < path.size(); ++i) {
-        totalTime += adj[path[i]][path[i+1]].second;
+        totalTime += adj[path[i]][path[i + 1]].second;
     }
 
+    std::ostringstream summary;
+    summary << "| " << minDistance[destination] << " Km | "
+            << totalTime << " h Using Car";
+    result.push_back(summary.str());
 
-    stringstream result;
-    for (size_t i = 0; i < path.size(); ++i) {
-        result << path[i] << (i + 1 < path.size() ? " --> " : "");
-    }
-    result << " | " << minDistance[destination] << " Km"
-           << " | " << totalTime << " h Using Car";
-
-    return result.str();
+    return result;
 }
 
 
-string Graph::DijkstraTime(const string& start, const string& destination) {
+std::vector<std::string> Graph::DijkstraTime(const string& start, const string& destination) {
+    std::vector<std::string> result;
 
-    if (adj.find(start) == adj.end() || adj.find(destination) == adj.end()) {
-        return "Path not found";
+    if (!containsCity(start) || !containsCity(destination)) {
+        return result;
     }
 
 
-    unordered_map<string, double> minTime;
-    unordered_map<string, string> previous;
-    priority_queue<pair<double, string>,
-                   vector<pair<double, string>>,
-                   greater<>> pq;
+    std::unordered_map<std::string, double> minTime;
+    std::unordered_map<std::string, std::string> previous;
+    std::priority_queue<std::pair<double, std::string>,
+                        std::vector<std::pair<double, std::string>>,
+                        std::greater<>> pq;
 
 
     for (auto& cityPair : adj) {
@@ -222,7 +234,7 @@ string Graph::DijkstraTime(const string& start, const string& destination) {
 
 
     if (minTime[destination] == numeric_limits<double>::infinity()) {
-        return "Path not found";
+        return result;
     }
 
 
@@ -233,17 +245,22 @@ string Graph::DijkstraTime(const string& start, const string& destination) {
     }
     reverse(path.begin(), path.end());
 
+    for (size_t i = 0; i < path.size(); ++i) {
+        result.push_back(path[i]);
+        if (i + 1 < path.size()) {
+            result.push_back("-->");
+        }
+    }
+
     double totalDistance = 0.0;
     for (size_t i = 0; i + 1 < path.size(); ++i) {
         totalDistance += adj[path[i]][path[i+1]].first;
     }
+    
+    std::ostringstream summary;
+    summary << "| " << totalDistance << " Km | "
+            << minTime[destination] << " h Using Car";
+    result.push_back(summary.str());
 
-    stringstream result;
-    for (size_t i = 0; i < path.size(); ++i) {
-        result << path[i] << (i + 1 < path.size() ? " " : "");
-    }
-    result << " | " << minTime[destination]
-           << " | " << totalDistance;
-
-    return result.str();
+    return result;
 }
