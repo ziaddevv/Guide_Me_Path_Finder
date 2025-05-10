@@ -33,6 +33,11 @@ MainWindow::~MainWindow()
 }
 void MainWindow::on_exploreButton_clicked()
 {
+    QString selectedMap = ui->MapSelectionCmb->currentText().trimmed();
+    if (selectedMap.isEmpty()) {
+        QMessageBox::warning(this, "No Map Selected", "Please select a map before exploring.");
+        return;
+    }
 
     ExploreMap* exploreMap = new ExploreMap(&program, this);
     exploreMap->setAttribute(Qt::WA_DeleteOnClose);

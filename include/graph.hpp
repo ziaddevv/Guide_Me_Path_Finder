@@ -7,6 +7,7 @@
 #include <sstream>
 #include <limits>
 #include<algorithm>
+
 using namespace std;
 
 class Graph {
@@ -23,8 +24,10 @@ public:
     void addEdge(const string& src, const string& dest, double distance, double time);
     void deleteCity(const string& name);
     void deleteEdge(const string& src, const string& dest);
-    string BFS(const string& start);
-    string DFS(const string& start);
-    string DijkstraDistance(const string& start, const string& destination);
-    string DijkstraTime(const string& start, const string& destination);
+    bool containsCity(const string& name);
+    bool containsEdge(const string& city1, const string& city2);
+    std::vector<std::string> BFS(const string& start);
+    std::vector<std::string> DFS(const string& start);
+    std::vector<std::string> DijkstraDistance(const string& start, const string& destination);
+    std::vector<std::string> DijkstraTime(const string& start, const string& destination);
 };
