@@ -33,7 +33,8 @@ MainWindow::~MainWindow()
 }
 void MainWindow::on_exploreButton_clicked()
 {
-
+    if(ui->MapSelectionCmb->currentText()=="")
+        return;
     ExploreMap* exploreMap = new ExploreMap(&program, this);
     exploreMap->setAttribute(Qt::WA_DeleteOnClose);
     exploreMap->show();
