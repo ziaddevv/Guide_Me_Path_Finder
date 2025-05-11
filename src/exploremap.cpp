@@ -42,19 +42,50 @@ void ExploreMap::on_findPath_clicked() {
 
     if (city1.isEmpty() || city2.isEmpty()) return;
 
-    auto path = program->currentGraph->DijkstraDistance(city1.toStdString(), city2.toStdString());
+    if (!ui->distance_rad->isChecked() && !ui->time_rad->isChecked()) return;
 
-    if (path.empty()) {
-        ui->path->setText("No path found.");
-        return;
+    vector<string> pathResult;
+    if (ui->distance_rad->isChecked()){
+        auto shortestPath = program->currentGraph->DijkstraDistance(city1.toStdString(), city2.toStdString());
+        if (shortestPath.path.empty()) {
+            ui->path->setText("No path found.");
+            return;
+        }
+
+        for (size_t i = 0; i < shortestPath.path.size(); ++i) {
+            pathResult.push_back(shortestPath.path[i]);
+            if (i + 1 < shortestPath.path.size()) {
+                pathResult.push_back("-->");
+            }
+        }
+        std::ostringstream summary;
+        summary << "| " << shortestPath.distanceOrTime << " Km";
+        pathResult.push_back(summary.str());
     }
 
-    QString result;
-    for (const auto& part : path) {
-        result += QString::fromStdString(part) + " ";
+    if (ui->time_rad->isChecked()){
+        auto shortestPath = program->currentGraph->DijkstraTime(city1.toStdString(), city2.toStdString());
+        if (shortestPath.path.empty()) {
+            ui->path->setText("No path found.");
+            return;
+        }
+
+        for (size_t i = 0; i < shortestPath.path.size(); ++i) {
+            pathResult.push_back(shortestPath.path[i]);
+            if (i + 1 < shortestPath.path.size()) {
+                pathResult.push_back("-->");
+            }
+        }
+        std::ostringstream summary;
+        summary << "| " << shortestPath.distanceOrTime << " h Using Car";
+        pathResult.push_back(summary.str());
     }
 
-    ui->path->setText(result.trimmed());
+    QString output;
+    for (const auto& part : pathResult) {
+        output += QString::fromStdString(part) + " ";
+    }
+    ui->path->setText(output.trimmed());
 }
 
 void ExploreMap::on_BFS_clicked(){

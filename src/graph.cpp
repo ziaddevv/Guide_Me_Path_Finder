@@ -1,6 +1,5 @@
 #include "graph.hpp"
 
-
 void Graph::addCity(const string& name) {
     if (containsCity(name)) {
         numberOfCities++;
@@ -27,6 +26,8 @@ void Graph::addEdge(const string& src, const string& dest, double distance, doub
     if (src == dest) return;
     if (distance < 0) distance *= -1;
     if (time < 0) time *= -1;
+
+    // If the edge already exists, it will be updated.
     adj[src][dest] = {distance, time};
     adj[dest][src] = {distance, time};
 }
@@ -120,11 +121,11 @@ std::vector<std::string> Graph::DFS(const std::string& start) {
     return result;
 }
 
-std::vector<std::string> Graph::DijkstraDistance(const std::string& start, const std::string& destination) {
-    std::vector<std::string> result;
+Graph::PathResult Graph::DijkstraDistance(const std::string& start, const std::string& destination) {
+    PathResult newResult;
 
     if (!containsCity(start) || !containsCity(destination)) {
-        return result;
+        return newResult;
     }
 
     std::unordered_map<std::string, double> minDistance;
@@ -160,44 +161,26 @@ std::vector<std::string> Graph::DijkstraDistance(const std::string& start, const
     }
 
     if (minDistance[destination] == std::numeric_limits<double>::infinity()) {
-        return result;
+        return newResult;
     }
 
     // Reconstruct path
-    std::vector<std::string> path;
     for (std::string cur = destination; ; cur = previous[cur]) {
-        path.push_back(cur);
+        newResult.path.push_back(cur);
         if (cur == start) break;
     }
-    std::reverse(path.begin(), path.end());
+    std::reverse(newResult.path.begin(), newResult.path.end());
+    newResult.distanceOrTime = minDistance[destination];
 
-    for (size_t i = 0; i < path.size(); ++i) {
-        result.push_back(path[i]);
-        if (i + 1 < path.size()) {
-            result.push_back("-->");
-        }
-    }
-
-    // Calculate time
-    double totalTime = 0.0;
-    for (size_t i = 0; i + 1 < path.size(); ++i) {
-        totalTime += adj[path[i]][path[i + 1]].second;
-    }
-
-    std::ostringstream summary;
-    summary << "| " << minDistance[destination] << " Km | "
-            << totalTime << " h Using Car";
-    result.push_back(summary.str());
-
-    return result;
+    return newResult;
 }
 
 
-std::vector<std::string> Graph::DijkstraTime(const string& start, const string& destination) {
-    std::vector<std::string> result;
+Graph::PathResult Graph::DijkstraTime(const string& start, const string& destination) {
+    PathResult newResult;
 
     if (!containsCity(start) || !containsCity(destination)) {
-        return result;
+        return newResult;
     }
 
 
@@ -234,33 +217,16 @@ std::vector<std::string> Graph::DijkstraTime(const string& start, const string& 
 
 
     if (minTime[destination] == numeric_limits<double>::infinity()) {
-        return result;
+        return newResult;
     }
 
 
-    vector<string> path;
-    for (string cur = destination;; cur = previous[cur]) {
-        path.push_back(cur);
+    for (string cur = destination; ; cur = previous[cur]) {
+        newResult.path.push_back(cur);
         if (cur == start) break;
     }
-    reverse(path.begin(), path.end());
+    reverse(newResult.path.begin(), newResult.path.end());
+    newResult.distanceOrTime = minTime[destination];
 
-    for (size_t i = 0; i < path.size(); ++i) {
-        result.push_back(path[i]);
-        if (i + 1 < path.size()) {
-            result.push_back("-->");
-        }
-    }
-
-    double totalDistance = 0.0;
-    for (size_t i = 0; i + 1 < path.size(); ++i) {
-        totalDistance += adj[path[i]][path[i+1]].first;
-    }
-    
-    std::ostringstream summary;
-    summary << "| " << totalDistance << " Km | "
-            << minTime[destination] << " h Using Car";
-    result.push_back(summary.str());
-
-    return result;
+    return newResult;
 }

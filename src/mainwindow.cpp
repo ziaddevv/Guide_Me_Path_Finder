@@ -31,6 +31,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 void MainWindow::on_exploreButton_clicked()
 {
     QString selectedMap = ui->MapSelectionCmb->currentText().trimmed();
@@ -44,6 +45,7 @@ void MainWindow::on_exploreButton_clicked()
     exploreMap->show();
 
 }
+
 float max(float a,double b)
 {
     if(a>b)
@@ -51,6 +53,7 @@ float max(float a,double b)
     else
         return b;
 }
+
 void MainWindow::ShowMap(int index)
 {
     if(index==0)
@@ -268,16 +271,11 @@ void MainWindow::ShowMap(int index)
         }
     }
 }
+
 void MainWindow::onMapSelectionChanged(int index)
 {
     ShowMap(index);
 }
-
-
-
-
-
-
 
 void MainWindow::on_addGraphButton_clicked()
 {

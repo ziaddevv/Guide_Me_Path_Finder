@@ -37,14 +37,11 @@ private slots:
     void onMapSelectionChanged(int index);
     void ShowMap(int index);
     void on_exploreButton_clicked();
-
     void on_addGraphButton_clicked();
-
     void on_deleteGraphButton_clicked();
     void updateGraphComboBox();
 
 private:
-
     Ui::MainWindow *ui;
     Program program;
 };

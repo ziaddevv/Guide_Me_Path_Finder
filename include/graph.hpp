@@ -14,8 +14,11 @@ class Graph {
 private:
 
 public:
-
-    int numberOfCities=0;
+    struct PathResult {
+        std::vector<std::string> path;
+        double distanceOrTime = 0.0;
+    };
+    int numberOfCities = 0;
     string name;
     unordered_map<string, unordered_map<string, pair<double, double>>> adj;
      vector<string>getAllCities();
@@ -28,6 +31,6 @@ public:
     bool containsEdge(const string& city1, const string& city2);
     std::vector<std::string> BFS(const string& start);
     std::vector<std::string> DFS(const string& start);
-    std::vector<std::string> DijkstraDistance(const string& start, const string& destination);
-    std::vector<std::string> DijkstraTime(const string& start, const string& destination);
+    PathResult DijkstraDistance(const string& start, const string& destination);
+    PathResult DijkstraTime(const string& start, const string& destination);
 };
