@@ -42,6 +42,7 @@ void MainWindow::on_exploreButton_clicked()
 
     ExploreMap* exploreMap = new ExploreMap(&program, this);
     exploreMap->setAttribute(Qt::WA_DeleteOnClose);
+    this->hide();
     exploreMap->show();
 
 }

@@ -6,6 +6,7 @@ CONFIG += c++17
 INCLUDEPATH += include
 
 SOURCES += \
+    mainform.cpp \
     src/program.cpp \
     src/city.cpp \
     src/cityexplorer.cpp \
@@ -23,9 +24,11 @@ HEADERS += \
     include/graph.hpp \
     include/graphviewitems.hpp \
     include/mainwindow.h \
-    include/exploremap.h
+    include/exploremap.h \
+    mainform.h
 
 FORMS += \
+    mainform.ui \
     ui/cityexplorer.ui \
     ui/exploremap.ui \
     ui/mainwindow.ui
@@ -34,3 +37,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc

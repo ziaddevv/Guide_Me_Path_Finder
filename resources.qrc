@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/WhiteLogoCutted.png</file>
+        <file>images/symbol-delete.png</file>
+        <file>images/cross 64.png</file>
+        <file>images/red-x-icon.png</file>
+    </qresource>
+</RCC>

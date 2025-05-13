@@ -75,6 +75,9 @@
     <property name="text">
      <string>Add Graph</string>
     </property>
+    <property name="icon">
+     <iconset theme="QIcon::ThemeIcon::ListAdd"/>
+    </property>
    </widget>
    <widget class="QPushButton" name="deleteGraphButton">
     <property name="geometry">
@@ -88,6 +91,10 @@
     <property name="text">
      <string>Delete Graph</string>
     </property>
+    <property name="icon">
+     <iconset resource="../resources.qrc">
+      <normaloff>:/images/images/symbol-delete.png</normaloff>:/images/images/symbol-delete.png</iconset>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -96,12 +103,14 @@
      <x>0</x>
      <y>0</y>
      <width>1367</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
