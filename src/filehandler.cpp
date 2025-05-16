@@ -6,7 +6,7 @@
 Filehandler::Filehandler() {}
  string Filehandler::ReadFile()
 {
-    QFile file("C:\\Users\\DELL\\Documents\\GitHub\\wasalney_mini_Path_Finder\\filename.txt");
+    QFile file("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::information(0, "info", file.errorString());
         return "";

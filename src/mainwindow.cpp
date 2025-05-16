@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "editgraph.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,15 +37,13 @@ void MainWindow::on_exploreButton_clicked()
 {
     QString selectedMap = ui->MapSelectionCmb->currentText().trimmed();
     if (selectedMap.isEmpty()) {
-        QMessageBox::warning(this, "No Map Selected", "Please select a map before exploring.");
+        QMessageBox::warning(this, "No Map Selected", "Please select a map before exploring the shortest path.");
         return;
     }
 
     ExploreMap* exploreMap = new ExploreMap(&program, this);
     exploreMap->setAttribute(Qt::WA_DeleteOnClose);
-    this->hide();
     exploreMap->show();
-
 }
 
 float max(float a,double b)
@@ -263,7 +262,7 @@ void MainWindow::ShowMap(int index)
 
                     QGraphicsTextItem* distLabel = scene->addText(QString::number(edgeData.first) + " km");
                     distLabel->setPos(labelPos);
-                    distLabel->setDefaultTextColor(Qt::darkRed);
+                    distLabel->setDefaultTextColor(Qt::white);
 
                     drawn.insert({city, neighbor});
                     drawn.insert({neighbor, city});
@@ -276,6 +275,12 @@ void MainWindow::ShowMap(int index)
 void MainWindow::onMapSelectionChanged(int index)
 {
     ShowMap(index);
+    const auto& cities = program.currentGraph->getAllCities();
+    ui->start->clear();
+    for (const auto& city : cities) {
+        ui->start->addItem(QString::fromStdString(city));
+    }
+    ui->start->setCurrentIndex(-1);
 }
 
 void MainWindow::on_addGraphButton_clicked()
@@ -320,3 +325,72 @@ void MainWindow::on_deleteGraphButton_clicked()
     }
 }
 
+void MainWindow::on_BFS_clicked(){
+    if (!program.currentGraph) return;
+
+    QString start = ui->start->currentText();
+
+    if (start.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Start cannot be empty.");
+        return;
+    }
+
+    auto graph = program.currentGraph->BFS(start.toStdString());
+
+    if (graph.empty()) {
+        ui->traversal->setText("No path found.");
+        return;
+    }
+
+    QString result;
+    for (size_t i = 0; i < graph.size(); ++i) {
+        result += QString::fromStdString(graph[i]);
+        if (i + 1 < graph.size())
+            result += " --> ";
+    }
+
+    ui->traversal->setText(result);
+}
+
+void MainWindow::on_DFS_clicked(){
+    if (!program.currentGraph) return;
+
+    QString start = ui->start->currentText();
+
+    if (start.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Start cannot be empty.");
+        return;
+    }
+
+    auto graph = program.currentGraph->DFS(start.toStdString());
+
+    if (graph.empty()) {
+        ui->traversal->setText("No path found.");
+        return;
+    }
+
+    QString result;
+    for (size_t i = 0; i < graph.size(); ++i) {
+        result += QString::fromStdString(graph[i]);
+        if (i + 1 < graph.size())
+            result += " --> ";
+    }
+
+    ui->traversal->setText(result);
+}
+
+void MainWindow::on_editGraph_clicked(){
+    QString selectedMap = ui->MapSelectionCmb->currentText().trimmed();
+    if(selectedMap.isEmpty()){
+        QMessageBox::warning(this, "No Map Selected", "Please select a map before editing.");
+        return;
+    }
+
+    editGraph* edit = new editGraph(&program, this);
+    edit->setAttribute(Qt::WA_DeleteOnClose);
+    edit->show();
+
+    connect(edit, &QObject::destroyed, this, [=]() {
+        ui->editGraph->setEnabled(true);
+    });
+}

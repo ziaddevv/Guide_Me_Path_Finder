@@ -1,19 +1,14 @@
 #include "exploremap.h"
 #include "ui_exploremap.h"
+#include"graphviewitems.hpp"
 #include<QMessageBox>
+#include <QGraphicsTextItem>
 
 ExploreMap::ExploreMap(Program* program, QWidget* parent)
     : QDialog(parent), ui(new Ui::ExploreMap), program(program) {
     ui->setupUi(this);
     ui->label->setText(QString::fromStdString(program->currentGraph->name));
     populateComboBoxes();
-    connect(ui->findPath, &QPushButton::clicked, this, &ExploreMap::on_findPath_clicked);
-    connect(ui->BFS, &QPushButton::clicked, this, &ExploreMap::on_BFS_clicked);
-    connect(ui->DFS, &QPushButton::clicked, this, &ExploreMap::on_DFS_clicked);
-    connect(ui->IC, &QPushButton::clicked, this, &ExploreMap::on_insertCity_clicked);
-    connect(ui->DC, &QPushButton::clicked, this, &ExploreMap::on_deleteCity_clicked);
-    connect(ui->IE, &QPushButton::clicked, this, &ExploreMap::on_insertEdge_clicked);
-    connect(ui->DE, &QPushButton::clicked, this, &ExploreMap::on_deleteEdge_clicked);
 }
 
 void ExploreMap::populateComboBoxes() {
@@ -21,17 +16,13 @@ void ExploreMap::populateComboBoxes() {
 
     const auto& cities = program->currentGraph->getAllCities();
 
-    QList<QComboBox*> comboBoxes = { ui->city1, ui->city2, ui->start, ui->DCity, ui->IECity1,  ui->IECity2, ui->DECity1, ui->DECity2 };
-
     for (const auto& city : cities) {
-        for (auto comboBox : comboBoxes) {
-            comboBox->addItem(QString::fromStdString(city));
-        }
+        ui->city1->addItem(QString::fromStdString(city));
+        ui->city2->addItem(QString::fromStdString(city));
     }
 
-    for (auto comboBox : comboBoxes) {
-        comboBox->setCurrentIndex(-1);
-    }
+    ui->city1->setCurrentIndex(-1);
+    ui->city2->setCurrentIndex(-1);
 }
 
 void ExploreMap::on_findPath_clicked() {
@@ -40,9 +31,15 @@ void ExploreMap::on_findPath_clicked() {
     QString city1 = ui->city1->currentText();
     QString city2 = ui->city2->currentText();
 
-    if (city1.isEmpty() || city2.isEmpty()) return;
+    if (city1.isEmpty() || city2.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Source and destination cannot be empty.");
+        return;
+    }
 
-    if (!ui->distance_rad->isChecked() && !ui->time_rad->isChecked()) return;
+    if (!ui->distance_rad->isChecked() && !ui->time_rad->isChecked()) {
+        QMessageBox::warning(this, "Input Error", "Dijkstra's mode cannot be empty.");
+        return;
+    }
 
     vector<string> pathResult;
     if (ui->distance_rad->isChecked()){
@@ -61,6 +58,7 @@ void ExploreMap::on_findPath_clicked() {
         std::ostringstream summary;
         summary << "| " << shortestPath.distanceOrTime << " Km";
         pathResult.push_back(summary.str());
+        showPath(shortestPath.path, 'd');
     }
 
     if (ui->time_rad->isChecked()){
@@ -77,8 +75,9 @@ void ExploreMap::on_findPath_clicked() {
             }
         }
         std::ostringstream summary;
-        summary << "| " << shortestPath.distanceOrTime << " h Using Car";
+        summary << "| " << shortestPath.distanceOrTime << " hrs";
         pathResult.push_back(summary.str());
+        showPath(shortestPath.path, 't');
     }
 
     QString output;
@@ -88,163 +87,215 @@ void ExploreMap::on_findPath_clicked() {
     ui->path->setText(output.trimmed());
 }
 
-void ExploreMap::on_BFS_clicked(){
-    if (!program->currentGraph) return;
-
-    QString start = ui->start->currentText();
-
-    if (start.isEmpty()) return;
-
-    auto graph = program->currentGraph->BFS(start.toStdString());
-
-    if (graph.empty()) {
-        ui->path->setText("No path found.");
+void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
+    // Validate input
+    if (!program || !program->currentGraph || path.empty()) {
+        qWarning() << "Invalid input for path visualization";
         return;
     }
 
-    QString result;
-    for (size_t i = 0; i < graph.size(); ++i) {
-        result += QString::fromStdString(graph[i]);
-        if (i + 1 < graph.size())
-            result += " --> ";
+    // Create scene
+    QGraphicsScene* scene = new QGraphicsScene(this);
+    scene->setBackgroundBrush(Qt::black);
+    ui->visualizePath->setScene(scene);
+
+    // Get all cities from the graph
+    std::vector<std::string> allCities;
+    for (const auto& [city, _] : program->currentGraph->adj) {
+        allCities.push_back(city);
     }
 
-    ui->traversal->setText(result);
-}
+    // Initialize node positions in a circle
+    std::map<std::string, QPointF> positions;
+    std::map<std::string, QPointF> velocities;
+    const double radius = std::min(ui->visualizePath->width(), ui->visualizePath->height()) * 0.35;
+    const double centerX = ui->visualizePath->width() / 2.0;
+    const double centerY = ui->visualizePath->height() / 2.0;
 
-void ExploreMap::on_DFS_clicked(){
-    if (!program->currentGraph) return;
-
-    QString start = ui->start->currentText();
-
-    if (start.isEmpty()) return;
-
-    auto graph = program->currentGraph->DFS(start.toStdString());
-
-    if (graph.empty()) {
-        ui->path->setText("No path found.");
-        return;
+    for (size_t i = 0; i < allCities.size(); i++) {
+        const double angle = 2.0 * M_PI * i / allCities.size();
+        positions[allCities[i]] = QPointF(
+            centerX + radius * std::cos(angle),
+            centerY + radius * std::sin(angle)
+            );
+        velocities[allCities[i]] = QPointF(0, 0);
     }
 
-    QString result;
-    for (size_t i = 0; i < graph.size(); ++i) {
-        result += QString::fromStdString(graph[i]);
-        if (i + 1 < graph.size())
-            result += " --> ";
-    }
+    // Calculate average edge value based on mode
+    const auto& graph = program->currentGraph->adj;
+    double totalValue = 0.0;
+    int edgeCount = 0;
 
-    ui->traversal->setText(result);
-}
-
-void ExploreMap::on_insertCity_clicked(){
-    QString cityName = ui->insertCity->text().trimmed();
-
-    if (cityName.isEmpty()) {
-        QMessageBox::warning(this, "Input Error", "City name cannot be empty.");
-        return;
-    }
-
-    if (!program->currentGraph->containsCity(cityName.toStdString())) {
-        program->currentGraph->addCity(cityName.toStdString());
-        QMessageBox::information(this, "Success", "City added successfully.");
-        ui->insertCity->clear();
-
-        QList<QComboBox*> comboBoxes = { ui->city1, ui->city2, ui->start, ui->DCity, ui->IECity1,  ui->IECity2, ui->DECity1, ui->DECity2 };
-        for (auto comboBox : comboBoxes) {
-                comboBox->addItem(cityName);
+    for (const auto& [city, neighbors] : graph) {
+        for (const auto& [neighbor, edgeData] : neighbors) {
+            totalValue += (mode == 't') ? edgeData.second : edgeData.first;
+            edgeCount++;
         }
-    } else {
-        QMessageBox::warning(this, "Duplicate", "City already exists in the graph.");
-    }
-}
-
-void ExploreMap::on_deleteCity_clicked(){
-    QString cityName = ui->DCity->currentText().trimmed();
-
-    if (cityName.isEmpty()) {
-        QMessageBox::warning(this, "Input Error", "City name cannot be empty.");
-        return;
     }
 
-    if (program->currentGraph->containsCity(cityName.toStdString())) {
-        program->currentGraph->deleteCity(cityName.toStdString());
-        QMessageBox::information(this, "Success", "City deleted successfully.");
+    const double avgValue = (edgeCount > 0) ? totalValue / edgeCount : 100.0;
+    const double valueScale = 200.0 / avgValue;
 
-        QList<QComboBox*> comboBoxes = { ui->city1, ui->city2, ui->start, ui->DCity, ui->IECity1,  ui->IECity2, ui->DECity1, ui->DECity2 };
-        for (auto comboBox : comboBoxes) {
-            int index = comboBox->findText(cityName);
-            if (index != -1) {
-                comboBox->removeItem(index);
+    // Force-directed layout parameters
+    const int ITERATIONS = 150;
+    const double REPULSION = 10000.0;
+    const double SPRING_K = 0.002;
+    const double DAMPING = 0.85;
+    const double PADDING = 50.0;
+
+    // Run force-directed layout
+    for (int iter = 0; iter < ITERATIONS; iter++) {
+        std::map<std::string, QPointF> forces;
+
+        // Initialize forces to zero
+        for (const auto& city : allCities) {
+            forces[city] = QPointF(0, 0);
+        }
+
+        // Calculate repulsive forces
+        for (const auto& city1 : allCities) {
+            for (const auto& city2 : allCities) {
+                if (city1 != city2) {
+                    QPointF delta = positions[city1] - positions[city2];
+                    double distance = std::max(1.0, std::hypot(delta.x(), delta.y()));
+                    double repulsion = std::min(REPULSION / (distance * distance), 200.0);
+                    forces[city1] += delta * (repulsion / distance);
+                }
             }
         }
-        ui->DCity->setCurrentIndex(-1);
-    } else {
-        QMessageBox::warning(this, "Not Found", "City does not exist in the graph.");
+
+        // Calculate attractive forces (springs)
+        for (const auto& [city, neighbors] : graph) {
+            for (const auto& [neighbor, edgeData] : neighbors) {
+                QPointF delta = positions[city] - positions[neighbor];
+                double distance = std::max(1.0, std::hypot(delta.x(), delta.y()));
+                double edgeValue = (mode == 't') ? edgeData.second : edgeData.first;
+                double idealDist = edgeValue * valueScale;
+                double spring = -SPRING_K * (distance - idealDist);
+                forces[city] += delta * (spring / distance);
+            }
+        }
+
+        // Update positions with damping
+        const double maxSpeed = (iter < ITERATIONS / 2) ? 10.0 : 5.0;
+        for (const auto& city : allCities) {
+            velocities[city] = (velocities[city] + forces[city]) * DAMPING;
+
+            // Limit maximum speed
+            double speed = std::hypot(velocities[city].x(), velocities[city].y());
+            if (speed > maxSpeed) {
+                velocities[city] *= (maxSpeed / speed);
+            }
+
+            // Update position with bounds checking
+            positions[city] += velocities[city];
+            positions[city].setX(std::clamp(positions[city].x(), PADDING, ui->visualizePath->width() - PADDING));
+            positions[city].setY(std::clamp(positions[city].y(), PADDING, ui->visualizePath->height() - PADDING));
+        }
+
+        // Additional damping in late iterations
+        if (iter > ITERATIONS * 0.7) {
+            for (auto& [_, vel] : velocities) {
+                vel *= 0.95;
+            }
+        }
+    }
+
+    // Scale and center the layout
+    double minX = std::numeric_limits<double>::max();
+    double minY = minX;
+    double maxX = std::numeric_limits<double>::lowest();
+    double maxY = maxX;
+
+    for (const auto& [_, pos] : positions) {
+        minX = std::min(minX, pos.x());
+        minY = std::min(minY, pos.y());
+        maxX = std::max(maxX, pos.x());
+        maxY = std::max(maxY, pos.y());
+    }
+
+    const double scaleX = (maxX > minX) ? (ui->visualizePath->width() - 100) / (maxX - minX) : 1.0;
+    const double scaleY = (maxY > minY) ? (ui->visualizePath->height() - 100) / (maxY - minY) : 1.0;
+    const double scale = std::min(scaleX, scaleY);
+
+    if (scale < 0.9 || scale > 1.1) {
+        const double centerX = (minX + maxX) / 2;
+        const double centerY = (minY + maxY) / 2;
+        const double viewCenterX = ui->visualizePath->width() / 2;
+        const double viewCenterY = ui->visualizePath->height() / 2;
+
+        for (auto& [_, pos] : positions) {
+            pos = QPointF(
+                (pos.x() - centerX) * scale + viewCenterX,
+                (pos.y() - centerY) * scale + viewCenterY
+                );
+        }
+    }
+
+    // Draw all nodes
+    for (const auto& city : allCities) {
+        const QPointF pos = positions.at(city);
+        CityNode* node = new CityNode(QRectF(pos.x()-15, pos.y()-15, 30, 30),
+                                      QString::fromStdString(city));
+
+        // Highlight nodes in path
+        if (std::find(path.begin(), path.end(), city) != path.end()) {
+            node->setBrush(Qt::yellow);
+        }
+
+        scene->addItem(node);
+
+        // Add city label
+        QGraphicsTextItem* label = scene->addText(QString::fromStdString(city));
+        label->setPos(pos.x() - label->boundingRect().width() / 2,
+                      pos.y() + 20);
+    }
+
+    // Draw all edges
+    std::set<std::pair<std::string, std::string>> drawnEdges;
+
+    for (const auto& [city, neighbors] : graph) {
+        for (const auto& [neighbor, edgeData] : neighbors) {
+            // Skip if already drawn
+            if (drawnEdges.count({neighbor, city})) continue;
+
+            const QPointF from = positions.at(city);
+            const QPointF to = positions.at(neighbor);
+
+            // Create edge
+            EdgeLine* edge = new EdgeLine(QLineF(from.x(), from.y(), to.x(), to.y()),
+                                          QString::fromStdString(city),
+                                          QString::fromStdString(neighbor));
+
+            // Check if edge is part of the path
+            for (size_t i = 0; i + 1 < path.size(); ++i) {
+                if ((path[i] == city && path[i+1] == neighbor) ||
+                    (path[i] == neighbor && path[i+1] == city)) {
+                    edge->setPen(QPen(Qt::yellow, 3));
+                    break;
+                }
+            }
+
+            scene->addItem(edge);
+
+            // Add edge label (distance or time)
+            const double value = (mode == 't') ? edgeData.second : edgeData.first;
+            const QString unit = (mode == 't') ? " hrs" : " km";
+            QGraphicsTextItem* label = scene->addText(QString::number(value) + unit);
+
+            // Position label perpendicular to edge
+            const QPointF mid = (from + to) / 2;
+            QLineF edgeLine(from, to);
+            QLineF normal = edgeLine.normalVector();
+            normal.setLength(15);
+            label->setPos(mid + QPointF(normal.dx(), normal.dy()));
+            label->setDefaultTextColor(Qt::white);
+
+            drawnEdges.insert({city, neighbor});
+        }
     }
 }
 
-void ExploreMap::on_insertEdge_clicked() {
-    QString city1 = ui->IECity1->currentText().trimmed();
-    QString city2 = ui->IECity2->currentText().trimmed();
-
-    bool timeOk, distanceOk;
-    double time = ui->time->text().toDouble(&timeOk);
-    double distance = ui->distance->text().toDouble(&distanceOk);
-
-    if (city1.isEmpty() || city2.isEmpty()) {
-        QMessageBox::warning(this, "Input Error", "Please select both cities.");
-        return;
-    }
-
-    if (!timeOk || !distanceOk) {
-        QMessageBox::warning(this, "Input Error", "Please enter valid numerical values for time and distance.");
-        return;
-    }
-
-    if (city1 == city2) {
-        QMessageBox::warning(this, "Input Error", "The two cities must be different.");
-        return;
-    }
-
-    if (!program->currentGraph->containsCity(city1.toStdString()) || !program->currentGraph->containsCity(city2.toStdString())) {
-        QMessageBox::warning(this, "City Error", "Both cities must exist in the graph.");
-        return;
-    }
-
-    program->currentGraph->addEdge(city1.toStdString(), city2.toStdString(), distance, time);
-
-    QMessageBox::information(this, "Success", "Edge inserted successfully.");
-
-    ui->IECity1->setCurrentIndex(-1);
-    ui->IECity2->setCurrentIndex(-1);
-}
-
-void ExploreMap::on_deleteEdge_clicked() {
-    QString city1 = ui->DECity1->currentText().trimmed();
-    QString city2 = ui->DECity2->currentText().trimmed();
-
-    if (city1.isEmpty() || city2.isEmpty()) {
-        QMessageBox::warning(this, "Input Error", "Please select both cities.");
-        return;
-    }
-
-    if (city1 == city2) {
-        QMessageBox::warning(this, "Input Error", "The two cities must be different.");
-        return;
-    }
-
-    if (!program->currentGraph->containsEdge(city1.toStdString(), city2.toStdString())) {
-        QMessageBox::warning(this, "Edge Not Found", "No edge exists between the selected cities.");
-        return;
-    }
-
-    program->currentGraph->deleteEdge(city1.toStdString(), city2.toStdString());
-
-    QMessageBox::information(this, "Success", "Edge deleted successfully.");
-
-    ui->DECity1->setCurrentIndex(-1);
-    ui->DECity2->setCurrentIndex(-1);
-}
 
 ExploreMap::~ExploreMap()
 {

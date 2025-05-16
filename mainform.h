@@ -21,6 +21,7 @@ private slots:
 
 private:
     Ui::MainForm *ui;
+
 };
 
 #endif // MAINFORM_H

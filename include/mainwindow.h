@@ -18,6 +18,8 @@
 #include "program.hpp"
 #include"ui_exploremap.h"
 #include"exploremap.h"
+#include"ui_editGraph.h"
+
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,6 +42,9 @@ private slots:
     void on_addGraphButton_clicked();
     void on_deleteGraphButton_clicked();
     void updateGraphComboBox();
+    void on_BFS_clicked();
+    void on_DFS_clicked();
+    void on_editGraph_clicked();
 
 private:
     Ui::MainWindow *ui;

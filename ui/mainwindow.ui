@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1367</width>
-    <height>701</height>
+    <width>1358</width>
+    <height>795</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Show Maps</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QComboBox" name="MapSelectionCmb">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>590</x>
       <y>10</y>
       <width>201</width>
       <height>41</height>
@@ -27,7 +27,7 @@
    <widget class="QLabel" name="firstCityLbl_2">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>510</x>
       <y>20</y>
       <width>71</width>
       <height>21</height>
@@ -47,7 +47,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Explore Graph</string>
+     <string>Shortest Path</string>
     </property>
     <property name="autoDefault">
      <bool>true</bool>
@@ -56,9 +56,9 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>50</x>
       <y>60</y>
-      <width>1081</width>
+      <width>1161</width>
       <height>541</height>
      </rect>
     </property>
@@ -67,7 +67,7 @@
     <property name="geometry">
      <rect>
       <x>1230</x>
-      <y>170</y>
+      <y>220</y>
       <width>111</width>
       <height>33</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>1230</x>
-      <y>240</y>
+      <y>280</y>
       <width>111</width>
       <height>33</height>
      </rect>
@@ -96,14 +96,99 @@
       <normaloff>:/images/images/symbol-delete.png</normaloff>:/images/images/symbol-delete.png</iconset>
     </property>
    </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>610</y>
+      <width>1161</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Traversal</string>
+    </property>
+    <widget class="QTextBrowser" name="traversal">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>1141</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="start">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>40</y>
+       <width>121</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>40</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="BFS">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>30</y>
+       <width>80</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>BFS</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="DFS">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>30</y>
+       <width>80</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>DFS</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="editGraph">
+    <property name="geometry">
+     <rect>
+      <x>1229</x>
+      <y>160</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Edit Graph</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1367</width>
-     <height>25</height>
+     <width>1358</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
