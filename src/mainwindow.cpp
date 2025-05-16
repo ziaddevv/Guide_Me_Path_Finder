@@ -9,11 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    ui->MapSelectionCmb->addItem("");
+
     for (const auto& graph : program.graphs) {
         ui->MapSelectionCmb->addItem(QString::fromStdString(graph.name));
     }
-
+    ui->MapSelectionCmb->setCurrentIndex(-1);
 
     connect(ui->MapSelectionCmb, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::onMapSelectionChanged);
@@ -56,12 +56,12 @@ float max(float a,double b)
 
 void MainWindow::ShowMap(int index)
 {
-    if(index==0)
-    {
-         program.currentGraph = NULL;
+
+
+    if (index < 0 || index >= program.graphs.size() || !program.currentGraph) {
+        return;
     }
-    else if (index > 0 && index < static_cast<int>(program.graphs.size()+1)) {
-        program.currentGraph = &program.graphs[index-1];
+        program.currentGraph = &program.graphs[index];
 
         QGraphicsScene* scene = new QGraphicsScene(this);
         scene->setBackgroundBrush(Qt::black);
@@ -269,15 +269,22 @@ void MainWindow::ShowMap(int index)
                 }
             }
         }
-    }
+
 }
 
 void MainWindow::onMapSelectionChanged(int index)
 {
+    if (index < 0 || index >= program.graphs.size()) {
+
+        ui->start->clear();
+        program.currentGraph = nullptr;
+        return;
+    }
+
+    program.currentGraph = &program.graphs[index];
     ShowMap(index);
-    const auto& cities = program.currentGraph->getAllCities();
     ui->start->clear();
-    for (const auto& city : cities) {
+    for (const auto& city : program.currentGraph->getAllCities()) {
         ui->start->addItem(QString::fromStdString(city));
     }
     ui->start->setCurrentIndex(-1);
@@ -291,16 +298,42 @@ void MainWindow::on_addGraphButton_clicked()
                                          "", &ok);
     if (ok && !name.isEmpty()) {
         program.addGraph(name.toStdString());
-        updateGraphComboBox();  // Refresh the graph list in the UI
+       updateGraphComboBox();
         QMessageBox::information(this, "Graph Added", "Graph added successfully.");
     }
 }
 
 void MainWindow::updateGraphComboBox() {
+    QString currentSelection;
+    if (program.currentGraph) {
+        currentSelection = QString::fromStdString(program.currentGraph->name);
+    }
+
     ui->MapSelectionCmb->clear();
-    ui->MapSelectionCmb->addItem("");
+
+    if (program.graphs.empty()) {
+        program.currentGraph = nullptr;
+        return;
+    }
+
     for (const auto& g : program.graphs) {
         ui->MapSelectionCmb->addItem(QString::fromStdString(g.name));
+    }
+
+
+    int index = -1;
+    if (!currentSelection.isEmpty()) {
+        index = ui->MapSelectionCmb->findText(currentSelection);
+    }
+
+    if (index >= 0) {
+        ui->MapSelectionCmb->setCurrentIndex(index);
+    } else if (!program.graphs.empty()) {
+
+        ui->MapSelectionCmb->setCurrentIndex(0);
+        program.currentGraph = &program.graphs[0];
+    } else {
+        program.currentGraph = nullptr;
     }
 }
 

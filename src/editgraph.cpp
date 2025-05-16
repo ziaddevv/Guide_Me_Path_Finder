@@ -145,5 +145,6 @@ void editGraph::on_deleteEdge_clicked() {
 
 editGraph::~editGraph()
 {
+
     delete ui;
 }

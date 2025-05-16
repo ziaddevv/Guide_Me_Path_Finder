@@ -10,7 +10,8 @@ public:
     Program();
 
     void loadGraphs();
-    void addGraph(const std::string& name);
+    void saveGraphs();
+    bool addGraph(const std::string& name);
     bool deleteGraph(const std::string& name);
     Graph* getGraphByName(const std::string& name);
     void setCurrentGraph(const std::string& name);

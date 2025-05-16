@@ -3,6 +3,7 @@
 #include"graphviewitems.hpp"
 #include<QMessageBox>
 #include <QGraphicsTextItem>
+#include <set>
 
 ExploreMap::ExploreMap(Program* program, QWidget* parent)
     : QDialog(parent), ui(new Ui::ExploreMap), program(program) {

@@ -6,7 +6,7 @@ CONFIG += c++17
 INCLUDEPATH += include
 
 SOURCES += \
-    mainform.cpp \
+     src/mainform.cpp \
     src/editgraph.cpp \
     src/program.cpp \
     src/city.cpp \
@@ -26,12 +26,12 @@ HEADERS += \
     include/graphviewitems.hpp \
     include/mainwindow.h \
     include/exploremap.h \
-    mainform.h \
-    src/editgraph.h
+    include/mainform.h \
+    include/editgraph.h
 
 FORMS += \
-    mainform.ui \
-    src/editgraph.ui \
+    ui/mainform.ui \
+    ui/editgraph.ui \
     ui/cityexplorer.ui \
     ui/exploremap.ui \
     ui/mainwindow.ui

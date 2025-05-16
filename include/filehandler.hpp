@@ -15,9 +15,8 @@ public:
     vector<Graph>graphs;
     unordered_map<string,City>citiesGraphs;
     Filehandler();
-    string ReadFile();
     void ReadGraphFromFile(const string& filename);
-     void ReadCityGraphsFromFile(const string& filename);
+    void SaveInFile(const string& filename);
 };
 
 #endif // FILEHANDLER_HPP
