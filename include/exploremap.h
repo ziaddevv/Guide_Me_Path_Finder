@@ -17,15 +17,14 @@ public:
     explicit ExploreMap(Program* program, QWidget* parent = nullptr);
     void populateComboBoxes();
     ~ExploreMap();
+    struct City {
+        std::string name;
+        int x, y; // screen coordinates
+    };
 
 private slots:
     void on_findPath_clicked();
-    void on_BFS_clicked();
-    void on_DFS_clicked();
-    void on_insertCity_clicked();
-    void on_deleteCity_clicked();
-    void on_insertEdge_clicked();
-    void on_deleteEdge_clicked();
+    void showPath(const std::vector<std::string>& highlightPath, char mode);
 
 private:
     Ui::ExploreMap *ui;

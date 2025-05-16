@@ -7,6 +7,7 @@ INCLUDEPATH += include
 
 SOURCES += \
     mainform.cpp \
+    src/editgraph.cpp \
     src/program.cpp \
     src/city.cpp \
     src/cityexplorer.cpp \
@@ -25,10 +26,12 @@ HEADERS += \
     include/graphviewitems.hpp \
     include/mainwindow.h \
     include/exploremap.h \
-    mainform.h
+    mainform.h \
+    src/editgraph.h
 
 FORMS += \
     mainform.ui \
+    src/editgraph.ui \
     ui/cityexplorer.ui \
     ui/exploremap.ui \
     ui/mainwindow.ui
