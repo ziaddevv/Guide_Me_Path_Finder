@@ -5,13 +5,13 @@ Program::Program() {
 }
 
 void Program::loadGraphs() {
-    f.ReadGraphFromFile("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
+    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\GitHub\\wasalney_mini_Path_Finder\\filename.txt");
     graphs = f.graphs;
 }
 void Program::saveGraphs()
 {
     f.setGraphs(graphs);
-    f.SaveInFile("C:\\Users\\Youssef Elshemy\\source\\repos\\wasalney_mini_Path_Finder\\filename.txt");
+    f.SaveInFile("C:\\Users\\DELL\\Documents\\GitHub\\wasalney_mini_Path_Finder\\filename.txt");
 
 }
 

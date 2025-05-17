@@ -10,7 +10,6 @@ SOURCES += \
     src/editgraph.cpp \
     src/program.cpp \
     src/city.cpp \
-    src/cityexplorer.cpp \
     src/filehandler.cpp \
     src/graph.cpp \
     src/main.cpp \
@@ -20,7 +19,6 @@ SOURCES += \
 HEADERS += \
     include/program.hpp \
     include/city.hpp \
-    include/cityexplorer.h \
     include/filehandler.hpp \
     include/graph.hpp \
     include/graphviewitems.hpp \
@@ -32,7 +30,6 @@ HEADERS += \
 FORMS += \
     ui/mainform.ui \
     ui/editgraph.ui \
-    ui/cityexplorer.ui \
     ui/exploremap.ui \
     ui/mainwindow.ui
 

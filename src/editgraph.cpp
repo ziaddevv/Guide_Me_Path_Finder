@@ -12,6 +12,14 @@ editGraph::editGraph(Program* program, QWidget* parent)
     connect(ui->DC, &QPushButton::clicked, this, &editGraph::on_deleteCity_clicked);
     connect(ui->IE, &QPushButton::clicked, this, &editGraph::on_insertEdge_clicked);
     connect(ui->DE, &QPushButton::clicked, this, &editGraph::on_deleteEdge_clicked);
+
+    // Set focus border style for all widgets inside this form
+    this->setStyleSheet(R"(
+        QWidget:focus {
+            border: 2px solid #377DFF;
+            border-radius: 4px;
+        }
+    )");
 }
 
 

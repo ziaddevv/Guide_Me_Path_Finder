@@ -9,6 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Set focus border style for all widgets inside this form
+    this->setStyleSheet(R"(
+        QWidget:focus {
+            border: 2px solid #377DFF;
+            border-radius: 4px;
+        }
+    )");
 
 
     for (const auto& graph : program.graphs) {

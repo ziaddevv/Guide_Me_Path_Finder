@@ -10,6 +10,14 @@ ExploreMap::ExploreMap(Program* program, QWidget* parent)
     ui->setupUi(this);
     ui->label->setText(QString::fromStdString(program->currentGraph->name));
     populateComboBoxes();
+
+    // Set focus border style for all widgets inside this form
+    this->setStyleSheet(R"(
+        QWidget:focus {
+            border: 2px solid #377DFF;
+            border-radius: 4px;
+        }
+    )");
 }
 
 void ExploreMap::populateComboBoxes() {
