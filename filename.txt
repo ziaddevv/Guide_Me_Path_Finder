@@ -1,48 +1,41 @@
-6
-MapOfEgypt
-Fayoum Giza 90 1.3
-Hurghada Luxor 280 4
-Hurghada SharmElSheikh 150 3.5
-Alexandria Marsa_Matruh 280 3
-Aswan Cairo 850 10
-AbuSimbel Aswan 280 4
+4
+CompleteMap
+B E 125 2.1
+B D 115 1.7
+B C 110 1.5
+D E 85 1.5
+C E 100 1.8
+C D 90 1.2
+A E 140 3
+A D 130 2
+A C 120 2.5
+A B 100 2
 #
-newMap
-a e 25 10
-a b 50 10
-d e 60 10
-c e 50 10
-q1q zzz 111 22
+SplitMap
+Z1 Z2 80 1.5
+Y2 Y3 95 1.9
+Y1 Y2 90 1.8
+X3 X4 120 2.5
+X2 X3 110 2.2
+X1 X2 100 2
 #
-MapOfEurope
-Rome Zurich 700 8
-Berlin Prague 350 4
-Berlin Vienna 680 7.5
-Berlin Paris 1050 11
-Berlin London 930 10
-Athens Rome 1050 12
-Madrid Rome 1360 14
-Amsterdam Berlin 650 7
+MixedMap
+M7 M8 70 1.5
+M2 M3 110 2.5
+M3 M4 95 2
+M10 M9 60 1.2
+M1 M2 100 2
+M6 ISOLATED 0 0
+M5 ISOLATED 0 0
 #
-MapOfUSA
-Atlanta Miami 980 10
-NewYork Philadelphia 160 2
-Boston NewYork 350 4
-LasVegas LosAngeles 435 4.5
-LosAngeles Phoenix 580 6
-LosAngeles Washington 4300 41
-SanFrancisco Seattle 1300 14
-Chicago Denver 1600 16
-Chicago Seattle 3300 30
-Dallas Houston 360 3.5
-#
-www
-aaa x 45 54
-x z 20 10
-x y 20 10
-ii ISOLATED 0 0
-#
-qqq
-a b 11 111
-a vv 111 1
+HubMap
+F G 95 1.6
+E F 75 1.4
+B Central 120 1.8
+C D 85 1.7
+C Central 130 2
+Central E 140 2.2
+Central D 90 1.2
+A B 80 1.5
+A Central 100 1.5
 #
