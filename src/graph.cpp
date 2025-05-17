@@ -1,10 +1,10 @@
 #include "graph.hpp"
 
 void Graph::addCity(const string& name) {
-    if (containsCity(name)) {
+    if (!containsCity(name)) {
+        adj[name] = {};
         numberOfCities++;
     }
-    adj[name];
 }
 
 int Graph::getnumberOfCities()

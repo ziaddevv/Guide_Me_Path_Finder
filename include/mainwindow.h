@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include<math.h>
+#include <QCloseEvent>
 #include <QMainWindow>
 #include "graphviewitems.hpp"
 #include <vector>
@@ -18,7 +19,8 @@
 #include"ui_exploremap.h"
 #include"exploremap.h"
 #include"ui_editGraph.h"
-
+#include <QTimer>
+#include <QMap>
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,7 +35,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    void animateTraversal(const std::vector<std::string>& path);
+    void resetGraphColors();
 private slots:
     void onMapSelectionChanged(int index);
     void ShowMap(int index);
@@ -46,9 +49,15 @@ private slots:
     void on_editGraph_clicked();
 
     void on_saveBtn_clicked();
-
+    void animateTraversalStep();
+    void closeEvent(QCloseEvent *event) override;
 private:
     Ui::MainWindow *ui;
     Program program;
+    QTimer* animationTimer;
+    QVector<QString> animationPath;
+    int currentAnimationStep;
+    QMap<QString, CityNode*> cityNodes;
+    QMap<QPair<QString, QString>, EdgeLine*> edgeLines;
 };
 #endif // MAINWINDOW_H

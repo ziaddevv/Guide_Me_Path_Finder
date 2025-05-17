@@ -4,7 +4,8 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow),
+      animationTimer(nullptr)
 {
     ui->setupUi(this);
 
@@ -30,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    if (animationTimer) {
+        animationTimer->stop();
+        delete animationTimer;
+    }
     delete ui;
 }
 
@@ -61,6 +66,8 @@ void MainWindow::ShowMap(int index)
     if (index < 0 || index >= program.graphs.size() || !program.currentGraph) {
         return;
     }
+        cityNodes.clear();
+       edgeLines.clear();
         program.currentGraph = &program.graphs[index];
 
         QGraphicsScene* scene = new QGraphicsScene(this);
@@ -68,8 +75,8 @@ void MainWindow::ShowMap(int index)
         ui->graphicsView->setScene(scene);
 
         // Force-directed layout setup
-        std::map<std::string, QPointF> positions;
-        std::map<std::string, QPointF> velocities;
+       map<std::string, QPointF> positions;
+       map<std::string, QPointF> velocities;
 
         // Initialize cities with spread-out positions
         int cityCount = program.currentGraph->getAllCities().size();
@@ -237,6 +244,8 @@ void MainWindow::ShowMap(int index)
             QPointF pos = positions[city];
             CityNode* node = new CityNode(QRectF(pos.x()-15, pos.y()-15, 30, 30), QString::fromStdString(city));
             scene->addItem(node);
+            // Store reference to the city node
+            cityNodes[QString::fromStdString(city)] = node;
             QGraphicsTextItem* label = scene->addText(QString::fromStdString(city));
             label->setPos(pos.x() - label->boundingRect().width()/2, pos.y() + 20);
         }
@@ -252,7 +261,10 @@ void MainWindow::ShowMap(int index)
                                                   QString::fromStdString(city),
                                                   QString::fromStdString(neighbor));
                     scene->addItem(edge);
-
+                    QString fromCity = QString::fromStdString(city);
+                    QString toCity = QString::fromStdString(neighbor);
+                    edgeLines[{fromCity, toCity}] = edge;
+                    edgeLines[{toCity, fromCity}] = edge;
                     // Add distance label with offset
                     QPointF mid = (from + to) / 2;
                     QLineF line(from, to);
@@ -269,9 +281,62 @@ void MainWindow::ShowMap(int index)
                 }
             }
         }
-
+        // this is the timer for the animation
+        if (!animationTimer) {
+            animationTimer = new QTimer(this);
+            connect(animationTimer, &QTimer::timeout, this, &MainWindow::animateTraversalStep);
+        }
+}
+void MainWindow::resetGraphColors()
+{
+    for (auto node : cityNodes) {
+        node->highlight(Qt::cyan);
+    }
+    for (auto edge : edgeLines) {
+        edge->setPen(QPen(Qt::red, 3));
+    }
 }
 
+void MainWindow::animateTraversal(const std::vector<std::string>& path)
+{
+
+    animationPath.clear();
+    for (const auto& city : path) {
+        animationPath.append(QString::fromStdString(city));
+    }
+    resetGraphColors();
+    currentAnimationStep = 0;
+    animationTimer->start(500);
+}
+
+void MainWindow::animateTraversalStep()
+{
+    if (currentAnimationStep >= animationPath.size()) {
+        animationTimer->stop();
+        QTimer::singleShot(1000, this, &MainWindow::resetGraphColors);
+        return;
+    }
+
+
+    QString currentCity = animationPath[currentAnimationStep];
+
+
+    if (cityNodes.contains(currentCity)) {
+        cityNodes[currentCity]->highlight(Qt::green);
+    }
+
+
+    if (currentAnimationStep > 0) {
+        QString prevCity = animationPath[currentAnimationStep - 1];
+        QPair<QString, QString> edge = {prevCity, currentCity};
+
+        if (edgeLines.contains(edge)) {
+            edgeLines[edge]->setPen(QPen(Qt::red, 3));
+        }
+    }
+
+    currentAnimationStep++;
+}
 void MainWindow::onMapSelectionChanged(int index)
 {
     if (index < 0 || index >= program.graphs.size()) {
@@ -308,7 +373,6 @@ void MainWindow::updateGraphComboBox() {
     if (program.currentGraph) {
         currentSelection = QString::fromStdString(program.currentGraph->name);
     }
-
     ui->MapSelectionCmb->clear();
 
     if (program.graphs.empty()) {
@@ -358,58 +422,53 @@ void MainWindow::on_deleteGraphButton_clicked()
     }
 }
 
-void MainWindow::on_BFS_clicked(){
+void MainWindow::on_BFS_clicked()
+{
     if (!program.currentGraph) return;
-
     QString start = ui->start->currentText();
-
     if (start.isEmpty()) {
         QMessageBox::warning(this, "Input Error", "Start cannot be empty.");
         return;
     }
-
     auto graph = program.currentGraph->BFS(start.toStdString());
-
     if (graph.empty()) {
         ui->traversal->setText("No path found.");
         return;
     }
-
     QString result;
     for (size_t i = 0; i < graph.size(); ++i) {
         result += QString::fromStdString(graph[i]);
         if (i + 1 < graph.size())
             result += " --> ";
     }
-
     ui->traversal->setText(result);
+
+    animateTraversal(graph);
 }
 
-void MainWindow::on_DFS_clicked(){
+void MainWindow::on_DFS_clicked()
+{
     if (!program.currentGraph) return;
-
     QString start = ui->start->currentText();
-
     if (start.isEmpty()) {
         QMessageBox::warning(this, "Input Error", "Start cannot be empty.");
         return;
     }
-
     auto graph = program.currentGraph->DFS(start.toStdString());
-
     if (graph.empty()) {
         ui->traversal->setText("No path found.");
         return;
     }
 
+    // Display the path in text format
     QString result;
     for (size_t i = 0; i < graph.size(); ++i) {
         result += QString::fromStdString(graph[i]);
         if (i + 1 < graph.size())
             result += " --> ";
     }
-
     ui->traversal->setText(result);
+    animateTraversal(graph);
 }
 
 void MainWindow::on_editGraph_clicked(){
@@ -432,5 +491,25 @@ void MainWindow::on_saveBtn_clicked()
 {
     program.saveGraphs();
     this->close();
+}
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this,
+        "Save Changes",
+        "Do you want to save the changes you made?",
+        QMessageBox::Yes | QMessageBox::No
+        );
+
+    if (reply == QMessageBox::Yes) {
+        program.saveGraphs();
+        event->accept();
+    } else {
+
+        event->accept();
+    }
+
+
 }
 

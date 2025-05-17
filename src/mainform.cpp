@@ -11,13 +11,6 @@ MainForm::MainForm(QWidget *parent)
 }
 
 void MainForm::on_btnSelectMap_clicked() {
-    // Hide the current content (Screen 1)
-    // ui->->hide();  // Assuming 'currentWidget' is the object name of the current content
-
-
-    // Show the new content (Screen 2)
-    // ui->mainwindow->show();  // Assuming 'newWidget' is the object name of the new content
-
     MainWindow* w = new MainWindow();
     this->hide();
     w->show();

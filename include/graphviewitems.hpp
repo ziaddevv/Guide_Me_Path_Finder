@@ -21,12 +21,17 @@ public:
         setAcceptHoverEvents(true);
         setFlag(QGraphicsItem::ItemIsSelectable);
     }
+    void highlight(QColor color) {
+        setBrush(color);
+    }
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override {
         qDebug() << "City clicked:" << cityName;
         QGraphicsEllipseItem::mousePressEvent(event);
     }
+
+
 };
 
 

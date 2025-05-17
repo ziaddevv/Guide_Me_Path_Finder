@@ -4,7 +4,7 @@
 #include "filehandler.hpp"
 #include <vector>
 #include <string>
-
+using namespace std;
 class Program {
 public:
     Program();
@@ -17,7 +17,7 @@ public:
     void setCurrentGraph(const std::string& name);
 
     Filehandler f;
-    std::vector<Graph> graphs;
+     vector<Graph> graphs;
     Graph* currentGraph = nullptr;
 };
 
