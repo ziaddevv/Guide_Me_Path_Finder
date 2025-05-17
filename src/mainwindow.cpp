@@ -71,7 +71,7 @@ void MainWindow::ShowMap(int index)
         program.currentGraph = &program.graphs[index];
 
         QGraphicsScene* scene = new QGraphicsScene(this);
-        scene->setBackgroundBrush(Qt::black);
+        scene->setBackgroundBrush(QColor::fromHslF(210.0 / 360.0, 0.0213, 0.1843));
         ui->graphicsView->setScene(scene);
 
         // Force-directed layout setup
@@ -90,8 +90,8 @@ void MainWindow::ShowMap(int index)
             for (const auto& city : program.currentGraph->getAllCities()) {
                 // Position cities in a circle
                 double angle = 2.0 * M_PI * i / cityCount;
-                double x = centerX + radius * std::cos(angle);
-                double y = centerY + radius * std::sin(angle);
+                double x = centerX + radius *  cos(angle);
+                double y = centerY + radius *  sin(angle);
                 positions[city] = QPointF(x, y);
                 velocities[city] = QPointF(0, 0);
                 i++;
