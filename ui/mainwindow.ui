@@ -181,6 +181,19 @@
      <string>Edit Graph</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="saveBtn">
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>560</y>
+      <width>111</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save and Exit</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -188,7 +201,7 @@
      <x>0</x>
      <y>0</y>
      <width>1358</width>
-     <height>21</height>
+     <height>29</height>
     </rect>
    </property>
   </widget>

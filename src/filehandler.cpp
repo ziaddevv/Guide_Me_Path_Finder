@@ -5,7 +5,9 @@
 #include <vector>
 Filehandler::Filehandler() {}
 
-
+void Filehandler::setGraphs(const std::vector<Graph>& g) {
+    this->graphs = g;
+}
 void Filehandler::ReadGraphFromFile(const string& filename)
 {
     QFile file(QString::fromStdString(filename));
@@ -76,6 +78,8 @@ void Filehandler::ReadGraphFromFile(const string& filename)
 }
 void Filehandler::SaveInFile(const string& filename)
 {
+    qDebug() << "Number of graphs to save:" << graphs.size();
+
     QFile file(QString::fromStdString(filename));
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::critical(nullptr, "Error", "Failed to open file for writing: " + file.errorString());
@@ -88,7 +92,6 @@ void Filehandler::SaveInFile(const string& filename)
     out << graphs.size() << Qt::endl;
 
     for (const Graph& g : graphs) {
-        // Write graph name
         out << QString::fromStdString(g.name) << Qt::endl;
 
 

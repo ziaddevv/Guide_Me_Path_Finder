@@ -10,7 +10,9 @@ void Program::loadGraphs() {
 }
 void Program::saveGraphs()
 {
+    f.setGraphs(graphs);
     f.SaveInFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+
 }
 
 bool Program::addGraph(const std::string& name) {

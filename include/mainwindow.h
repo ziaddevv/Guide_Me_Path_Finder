@@ -6,7 +6,6 @@
 #include <vector>
 #include "graph.hpp"
 #include "filehandler.hpp"
-#include "cityexplorer.h"
 #include "qmessagebox.h"
 #include  "QGraphicsScene"
 #include "QGraphicsView"
@@ -45,6 +44,8 @@ private slots:
     void on_BFS_clicked();
     void on_DFS_clicked();
     void on_editGraph_clicked();
+
+    void on_saveBtn_clicked();
 
 private:
     Ui::MainWindow *ui;

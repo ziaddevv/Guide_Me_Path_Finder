@@ -427,3 +427,10 @@ void MainWindow::on_editGraph_clicked(){
         ui->editGraph->setEnabled(true);
     });
 }
+
+void MainWindow::on_saveBtn_clicked()
+{
+    program.saveGraphs();
+    this->close();
+}
+

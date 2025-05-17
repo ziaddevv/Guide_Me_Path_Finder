@@ -17,6 +17,7 @@ public:
     Filehandler();
     void ReadGraphFromFile(const string& filename);
     void SaveInFile(const string& filename);
+    void setGraphs(const std::vector<Graph>& g);
 };
 
 #endif // FILEHANDLER_HPP
