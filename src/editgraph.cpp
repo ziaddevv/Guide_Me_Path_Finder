@@ -22,6 +22,10 @@ void editGraph::populateComboBoxes() {
 
     QList<QComboBox*> comboBoxes = { ui->DCity, ui->IECity1,  ui->IECity2, ui->DECity1, ui->DECity2 };
 
+    for (auto comboBox : comboBoxes) {
+        comboBox->clear();
+    }
+
     for (const auto& city : cities) {
         for (auto comboBox : comboBoxes) {
             comboBox->addItem(QString::fromStdString(city));
@@ -46,10 +50,9 @@ void editGraph::on_insertCity_clicked(){
         QMessageBox::information(this, "Success", "City added successfully.");
         ui->insertCity->clear();
 
-        QList<QComboBox*> comboBoxes = { ui->DCity, ui->IECity1,  ui->IECity2, ui->DECity1, ui->DECity2 };
-        for (auto comboBox : comboBoxes) {
-            comboBox->addItem(cityName);
-        }
+        populateComboBoxes();
+
+        program->isModified = true;
     } else {
         QMessageBox::warning(this, "Duplicate", "City already exists in the graph.");
     }
@@ -67,14 +70,10 @@ void editGraph::on_deleteCity_clicked(){
         program->currentGraph->deleteCity(cityName.toStdString());
         QMessageBox::information(this, "Success", "City deleted successfully.");
 
-        QList<QComboBox*> comboBoxes = { ui->DCity, ui->IECity1,  ui->IECity2, ui->DECity1, ui->DECity2 };
-        for (auto comboBox : comboBoxes) {
-            int index = comboBox->findText(cityName);
-            if (index != -1) {
-                comboBox->removeItem(index);
-            }
-        }
+        populateComboBoxes();
+
         ui->DCity->setCurrentIndex(-1);
+        program->isModified = true;
     } else {
         QMessageBox::warning(this, "Not Found", "City does not exist in the graph.");
     }
@@ -112,8 +111,11 @@ void editGraph::on_insertEdge_clicked() {
 
     QMessageBox::information(this, "Success", "Edge inserted successfully.");
 
+    ui->time->clear();
+    ui->distance->clear();
     ui->IECity1->setCurrentIndex(-1);
     ui->IECity2->setCurrentIndex(-1);
+    program->isModified = true;
 }
 
 void editGraph::on_deleteEdge_clicked() {
@@ -141,6 +143,7 @@ void editGraph::on_deleteEdge_clicked() {
 
     ui->DECity1->setCurrentIndex(-1);
     ui->DECity2->setCurrentIndex(-1);
+    program->isModified = true;
 }
 
 editGraph::~editGraph()
