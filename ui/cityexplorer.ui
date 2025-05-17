@@ -60,6 +60,12 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>comboBox</tabstop>
+  <tabstop>findpathbtn</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>backBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

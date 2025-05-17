@@ -165,6 +165,15 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>city1</tabstop>
+  <tabstop>city2</tabstop>
+  <tabstop>distance_rad</tabstop>
+  <tabstop>time_rad</tabstop>
+  <tabstop>path</tabstop>
+  <tabstop>findPath</tabstop>
+  <tabstop>visualizePath</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

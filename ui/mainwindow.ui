@@ -207,6 +207,19 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>MapSelectionCmb</tabstop>
+  <tabstop>exploreButton</tabstop>
+  <tabstop>editGraph</tabstop>
+  <tabstop>addGraphButton</tabstop>
+  <tabstop>deleteGraphButton</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>start</tabstop>
+  <tabstop>BFS</tabstop>
+  <tabstop>DFS</tabstop>
+  <tabstop>traversal</tabstop>
+  <tabstop>graphicsView</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
