@@ -19,6 +19,7 @@ public:
     Filehandler f;
      vector<Graph> graphs;
     Graph* currentGraph = nullptr;
+     bool isModified = false;
 };
 
 #endif // PROGRAM_HPP
