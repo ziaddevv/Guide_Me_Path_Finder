@@ -4,7 +4,7 @@
 #include <QDialog>
 #include"graph.hpp"
 #include"program.hpp"
-
+using namespace std;
 namespace Ui {
 class ExploreMap;
 }
@@ -18,13 +18,13 @@ public:
     void populateComboBoxes();
     ~ExploreMap();
     struct City {
-        std::string name;
+        string name;
         int x, y; // screen coordinates
     };
 
 private slots:
     void on_findPath_clicked();
-    void showPath(const std::vector<std::string>& highlightPath, char mode);
+    void showPath(const vector<string>& highlightPath, char mode);
 
 private:
     Ui::ExploreMap *ui;

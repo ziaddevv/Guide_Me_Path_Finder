@@ -64,7 +64,7 @@ void ExploreMap::on_findPath_clicked() {
                 pathResult.push_back("-->");
             }
         }
-        std::ostringstream summary;
+        ostringstream summary;
         summary << "| " << shortestPath.distanceOrTime << " Km";
         pathResult.push_back(summary.str());
         showPath(shortestPath.path, 'd');
@@ -83,7 +83,7 @@ void ExploreMap::on_findPath_clicked() {
                 pathResult.push_back("-->");
             }
         }
-        std::ostringstream summary;
+        ostringstream summary;
         summary << "| " << shortestPath.distanceOrTime << " hrs";
         pathResult.push_back(summary.str());
         showPath(shortestPath.path, 't');
@@ -96,7 +96,7 @@ void ExploreMap::on_findPath_clicked() {
     ui->path->setText(output.trimmed());
 }
 
-void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
+void ExploreMap::showPath(const vector<string>& path, char mode) {
     // Validate input
     if (!program || !program->currentGraph || path.empty()) {
         qWarning() << "Invalid input for path visualization";
@@ -109,23 +109,23 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
     ui->visualizePath->setScene(scene);
 
     // Get all cities from the graph
-    std::vector<std::string> allCities;
+    vector<string> allCities;
     for (const auto& [city, _] : program->currentGraph->adj) {
         allCities.push_back(city);
     }
 
     // Initialize node positions in a circle
-    std::map<std::string, QPointF> positions;
-    std::map<std::string, QPointF> velocities;
-    const double radius = std::min(ui->visualizePath->width(), ui->visualizePath->height()) * 0.35;
+    map<string, QPointF> positions;
+    map<string, QPointF> velocities;
+    const double radius = min(ui->visualizePath->width(), ui->visualizePath->height()) * 0.35;
     const double centerX = ui->visualizePath->width() / 2.0;
     const double centerY = ui->visualizePath->height() / 2.0;
 
     for (size_t i = 0; i < allCities.size(); i++) {
         const double angle = 2.0 * M_PI * i / allCities.size();
         positions[allCities[i]] = QPointF(
-            centerX + radius * std::cos(angle),
-            centerY + radius * std::sin(angle)
+            centerX + radius * cos(angle),
+            centerY + radius * sin(angle)
             );
         velocities[allCities[i]] = QPointF(0, 0);
     }
@@ -154,7 +154,7 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
 
     // Run force-directed layout
     for (int iter = 0; iter < ITERATIONS; iter++) {
-        std::map<std::string, QPointF> forces;
+        map<string, QPointF> forces;
 
         // Initialize forces to zero
         for (const auto& city : allCities) {
@@ -166,8 +166,8 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
             for (const auto& city2 : allCities) {
                 if (city1 != city2) {
                     QPointF delta = positions[city1] - positions[city2];
-                    double distance = std::max(1.0, std::hypot(delta.x(), delta.y()));
-                    double repulsion = std::min(REPULSION / (distance * distance), 200.0);
+                    double distance = max(1.0, hypot(delta.x(), delta.y()));
+                    double repulsion = min(REPULSION / (distance * distance), 200.0);
                     forces[city1] += delta * (repulsion / distance);
                 }
             }
@@ -177,7 +177,7 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
         for (const auto& [city, neighbors] : graph) {
             for (const auto& [neighbor, edgeData] : neighbors) {
                 QPointF delta = positions[city] - positions[neighbor];
-                double distance = std::max(1.0, std::hypot(delta.x(), delta.y()));
+                double distance = max(1.0, hypot(delta.x(), delta.y()));
                 double edgeValue = (mode == 't') ? edgeData.second : edgeData.first;
                 double idealDist = edgeValue * valueScale;
                 double spring = -SPRING_K * (distance - idealDist);
@@ -191,15 +191,15 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
             velocities[city] = (velocities[city] + forces[city]) * DAMPING;
 
             // Limit maximum speed
-            double speed = std::hypot(velocities[city].x(), velocities[city].y());
+            double speed = hypot(velocities[city].x(), velocities[city].y());
             if (speed > maxSpeed) {
                 velocities[city] *= (maxSpeed / speed);
             }
 
             // Update position with bounds checking
             positions[city] += velocities[city];
-            positions[city].setX(std::clamp(positions[city].x(), PADDING, ui->visualizePath->width() - PADDING));
-            positions[city].setY(std::clamp(positions[city].y(), PADDING, ui->visualizePath->height() - PADDING));
+            positions[city].setX(clamp(positions[city].x(), PADDING, ui->visualizePath->width() - PADDING));
+            positions[city].setY(clamp(positions[city].y(), PADDING, ui->visualizePath->height() - PADDING));
         }
 
         // Additional damping in late iterations
@@ -211,21 +211,21 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
     }
 
     // Scale and center the layout
-    double minX = std::numeric_limits<double>::max();
+    double minX = numeric_limits<double>::max();
     double minY = minX;
-    double maxX = std::numeric_limits<double>::lowest();
+    double maxX = numeric_limits<double>::lowest();
     double maxY = maxX;
 
     for (const auto& [_, pos] : positions) {
-        minX = std::min(minX, pos.x());
-        minY = std::min(minY, pos.y());
-        maxX = std::max(maxX, pos.x());
-        maxY = std::max(maxY, pos.y());
+        minX = min(minX, pos.x());
+        minY = min(minY, pos.y());
+        maxX = max(maxX, pos.x());
+        maxY = max(maxY, pos.y());
     }
 
     const double scaleX = (maxX > minX) ? (ui->visualizePath->width() - 100) / (maxX - minX) : 1.0;
     const double scaleY = (maxY > minY) ? (ui->visualizePath->height() - 100) / (maxY - minY) : 1.0;
-    const double scale = std::min(scaleX, scaleY);
+    const double scale = min(scaleX, scaleY);
 
     if (scale < 0.9 || scale > 1.1) {
         const double centerX = (minX + maxX) / 2;
@@ -261,7 +261,7 @@ void ExploreMap::showPath(const std::vector<std::string>& path, char mode) {
     }
 
     // Draw all edges
-    std::set<std::pair<std::string, std::string>> drawnEdges;
+    set<pair<string, string>> drawnEdges;
 
     for (const auto& [city, neighbors] : graph) {
         for (const auto& [neighbor, edgeData] : neighbors) {

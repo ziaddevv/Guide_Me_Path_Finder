@@ -9,7 +9,6 @@ SOURCES += \
      src/mainform.cpp \
     src/editgraph.cpp \
     src/program.cpp \
-    src/city.cpp \
     src/filehandler.cpp \
     src/graph.cpp \
     src/main.cpp \
@@ -18,7 +17,6 @@ SOURCES += \
 
 HEADERS += \
     include/program.hpp \
-    include/city.hpp \
     include/filehandler.hpp \
     include/graph.hpp \
     include/graphviewitems.hpp \

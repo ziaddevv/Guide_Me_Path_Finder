@@ -15,7 +15,7 @@ void Program::saveGraphs()
 
 }
 
-bool Program::addGraph(const std::string& name) {
+bool Program::addGraph(const string& name) {
     for (const auto& graph : graphs) {
         if (graph.name == name) {
             return false;
@@ -29,9 +29,9 @@ bool Program::addGraph(const std::string& name) {
     return true;
 }
 
-bool Program::deleteGraph(const std::string& name) {
+bool Program::deleteGraph(const string& name) {
 
-    auto it = std::find_if(graphs.begin(), graphs.end(), [&](const Graph& g) {
+    auto it = find_if(graphs.begin(), graphs.end(), [&](const Graph& g) {
         return g.name == name;
     });
 
@@ -50,7 +50,7 @@ bool Program::deleteGraph(const std::string& name) {
     return false;
 }
 
-Graph* Program::getGraphByName(const std::string& name) {
+Graph* Program::getGraphByName(const string& name) {
     for (auto& g : graphs) {
         if (g.name == name)
             return &g;
@@ -58,6 +58,6 @@ Graph* Program::getGraphByName(const std::string& name) {
     return nullptr;
 }
 
-void Program::setCurrentGraph(const std::string& name) {
+void Program::setCurrentGraph(const string& name) {
     currentGraph = getGraphByName(name);
 }

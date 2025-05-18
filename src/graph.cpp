@@ -64,24 +64,24 @@ bool Graph::containsEdge(const string& city1, const string& city2) {
 }
 
 
-std::vector<std::string> Graph::BFS(const std::string& start) {
-    std::vector<std::string> result;
+vector<string> Graph::BFS(const string& start) {
+    vector<string> result;
 
     if (!containsCity(start)) return result;
 
-    std::unordered_set<std::string> visited;
-    std::queue<std::string> q;
+    unordered_set<string> visited;
+    queue<string> q;
 
     q.push(start);
     visited.insert(start);
 
     while (!q.empty()) {
-        std::string city = q.front();
+        string city = q.front();
         q.pop();
         result.push_back(city);
 
-        for (const auto& [neighbor, _] : adj[city]) {
-            if (visited.find(neighbor) == visited.end()) {
+        for (const auto& [neighbor, _ ] : adj[city]) { //structured bindings inside range-based for loop
+            if (visited.find(neighbor) == visited.end()) { //couldn't find
                 visited.insert(neighbor);
                 q.push(neighbor);
             }
@@ -91,18 +91,18 @@ std::vector<std::string> Graph::BFS(const std::string& start) {
     return result;
 }
 
-std::vector<std::string> Graph::DFS(const std::string& start) {
-    std::vector<std::string> result;
+vector<string> Graph::DFS(const string& start) {
+    vector<string> result;
 
     if (!containsCity(start)) return result;
 
-    std::unordered_set<std::string> visited;
-    std::stack<std::string> st;
+    unordered_set<string> visited;
+    stack<string> st;
 
     st.push(start);
 
     while (!st.empty()) {
-        std::string city = st.top();
+        string city = st.top();
         st.pop();
 
         if (visited.find(city) == visited.end()) {
@@ -121,21 +121,21 @@ std::vector<std::string> Graph::DFS(const std::string& start) {
     return result;
 }
 
-Graph::PathResult Graph::DijkstraDistance(const std::string& start, const std::string& destination) {
+Graph::PathResult Graph::DijkstraDistance(const string& start, const string& destination) {
     PathResult newResult;
 
     if (!containsCity(start) || !containsCity(destination)) {
         return newResult;
     }
 
-    std::unordered_map<std::string, double> minDistance;
-    std::unordered_map<std::string, std::string> previous;
-    std::priority_queue<std::pair<double, std::string>,
-                        std::vector<std::pair<double, std::string>>,
-                        std::greater<>> pq;
+    unordered_map<string, double> minDistance;
+    unordered_map<string, string> previous;
+    priority_queue<pair<double, string>,
+                        vector<pair<double, string>>,
+                        greater<>> pq;
 
     for (const auto& cityPair : adj) {
-        minDistance[cityPair.first] = std::numeric_limits<double>::infinity();
+        minDistance[cityPair.first] = numeric_limits<double>::infinity();
     }
 
     minDistance[start] = 0.0;
@@ -160,16 +160,16 @@ Graph::PathResult Graph::DijkstraDistance(const std::string& start, const std::s
         }
     }
 
-    if (minDistance[destination] == std::numeric_limits<double>::infinity()) {
+    if (minDistance[destination] == numeric_limits<double>::infinity()) {
         return newResult;
     }
 
     // Reconstruct path
-    for (std::string cur = destination; ; cur = previous[cur]) {
+    for (string cur = destination; ; cur = previous[cur]) {
         newResult.path.push_back(cur);
         if (cur == start) break;
     }
-    std::reverse(newResult.path.begin(), newResult.path.end());
+    reverse(newResult.path.begin(), newResult.path.end());
     newResult.distanceOrTime = minDistance[destination];
 
     return newResult;
@@ -184,11 +184,11 @@ Graph::PathResult Graph::DijkstraTime(const string& start, const string& destina
     }
 
 
-    std::unordered_map<std::string, double> minTime;
-    std::unordered_map<std::string, std::string> previous;
-    std::priority_queue<std::pair<double, std::string>,
-                        std::vector<std::pair<double, std::string>>,
-                        std::greater<>> pq;
+    unordered_map<string, double> minTime;
+    unordered_map<string, string> previous;
+    priority_queue<pair<double, string>,
+                        vector<pair<double, string>>,
+                        greater<>> pq;
 
 
     for (auto& cityPair : adj) {

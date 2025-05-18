@@ -15,13 +15,13 @@ private:
 
 public:
     struct PathResult {
-        std::vector<std::string> path;
+        vector<string> path;
         double distanceOrTime = 0.0;
     };
     int numberOfCities = 0;
     string name;
     unordered_map<string, unordered_map<string, pair<double, double>>> adj;
-     vector<string>getAllCities();
+    vector<string>getAllCities();
     int getnumberOfCities();
     void addCity(const string& name);
     void addEdge(const string& src, const string& dest, double distance, double time);
@@ -29,8 +29,8 @@ public:
     void deleteEdge(const string& src, const string& dest);
     bool containsCity(const string& name);
     bool containsEdge(const string& city1, const string& city2);
-    std::vector<std::string> BFS(const string& start);
-    std::vector<std::string> DFS(const string& start);
+    vector<string> BFS(const string& start);
+    vector<string> DFS(const string& start);
     PathResult DijkstraDistance(const string& start, const string& destination);
     PathResult DijkstraTime(const string& start, const string& destination);
 };

@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void animateTraversal(const std::vector<std::string>& path);
+    void animateTraversal(const vector<string>& path);
     void resetGraphColors();
 private slots:
     void onMapSelectionChanged(int index);

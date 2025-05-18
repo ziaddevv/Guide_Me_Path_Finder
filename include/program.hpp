@@ -11,10 +11,10 @@ public:
 
     void loadGraphs();
     void saveGraphs();
-    bool addGraph(const std::string& name);
-    bool deleteGraph(const std::string& name);
-    Graph* getGraphByName(const std::string& name);
-    void setCurrentGraph(const std::string& name);
+    bool addGraph(const string& name);
+    bool deleteGraph(const string& name);
+    Graph* getGraphByName(const string& name);
+    void setCurrentGraph(const string& name);
 
     Filehandler f;
      vector<Graph> graphs;

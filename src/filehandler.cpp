@@ -5,7 +5,7 @@
 #include <vector>
 Filehandler::Filehandler() {}
 
-void Filehandler::setGraphs(const std::vector<Graph>& g) {
+void Filehandler::setGraphs(const vector<Graph>& g) {
     this->graphs = g;
 }
 void Filehandler::ReadGraphFromFile(const string& filename)
@@ -91,7 +91,7 @@ void Filehandler::SaveInFile(const string& filename)
         out << QString::fromStdString(g.name) << Qt::endl;
 
 
-        std::unordered_set<std::string> processedCities;
+        unordered_set<string> processedCities;
 
         for (const auto& srcPair : g.adj) {
             const string& source = srcPair.first;
