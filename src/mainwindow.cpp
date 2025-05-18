@@ -370,8 +370,8 @@ void MainWindow::on_addGraphButton_clicked()
                                          tr("Graph name:"), QLineEdit::Normal,
                                          "", &ok);
 
-    if(name.isEmpty()) { QMessageBox::warning(this, "Error", "Graph name cannot be empty."); return; }
     if (ok) {
+        if(name.isEmpty()) { QMessageBox::warning(this, "Error", "Graph name cannot be empty."); return; }
         int index1 = ui->MapSelectionCmb->findText(name);
         if (index1 >= 0) { QMessageBox::warning(this, "Error", "Graph name already exists. Use a unique name."); return; }
 
