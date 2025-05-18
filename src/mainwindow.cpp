@@ -369,7 +369,12 @@ void MainWindow::on_addGraphButton_clicked()
     QString name = QInputDialog::getText(this, tr("Add New Graph"),
                                          tr("Graph name:"), QLineEdit::Normal,
                                          "", &ok);
-    if (ok && !name.isEmpty()) {
+
+    if(name.isEmpty()) { QMessageBox::warning(this, "Error", "Graph name cannot be empty."); return; }
+    if (ok) {
+        int index1 = ui->MapSelectionCmb->findText(name);
+        if (index1 >= 0) { QMessageBox::warning(this, "Error", "Graph name already exists. Use a unique name."); return; }
+
         program.addGraph(name.toStdString());
        updateGraphComboBox();
 
