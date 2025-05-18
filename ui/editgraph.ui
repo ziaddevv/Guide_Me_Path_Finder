@@ -322,6 +322,20 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>insertCity</tabstop>
+  <tabstop>IC</tabstop>
+  <tabstop>IECity1</tabstop>
+  <tabstop>IECity2</tabstop>
+  <tabstop>distance</tabstop>
+  <tabstop>time</tabstop>
+  <tabstop>IE</tabstop>
+  <tabstop>DCity</tabstop>
+  <tabstop>DC</tabstop>
+  <tabstop>DECity1</tabstop>
+  <tabstop>DECity2</tabstop>
+  <tabstop>DE</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

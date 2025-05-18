@@ -5,13 +5,13 @@ Program::Program() {
 }
 
 void Program::loadGraphs() {
-    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+    f.ReadGraphFromFile("C:\\Users\\DELL\\Documents\\GitHub\\wasalney_mini_Path_Finder\\filename.txt");
     graphs = f.graphs;
 }
 void Program::saveGraphs()
 {
     f.setGraphs(graphs);
-    f.SaveInFile("C:\\Users\\DELL\\Documents\\wasalney_mini\\filename.txt");
+    f.SaveInFile("C:\\Users\\DELL\\Documents\\GitHub\\wasalney_mini_Path_Finder\\filename.txt");
 
 }
 
@@ -25,11 +25,7 @@ bool Program::addGraph(const std::string& name) {
     graphs.push_back(Graph());
     graphs.back().name = name;
 
-
-    if (graphs.size() == 1) {
-        currentGraph = &graphs[0];
-    }
-
+    isModified = true;
     return true;
 }
 
@@ -47,6 +43,7 @@ bool Program::deleteGraph(const std::string& name) {
 
 
         graphs.erase(it);
+        isModified = true;
         return true;
     }
 

@@ -1,4 +1,4 @@
-4
+5
 CompleteMap
 A B 100 2
 A C 120 2.5
@@ -38,4 +38,9 @@ Central D 90 1.2
 B Central 120 1.8
 E F 75 1.4
 F G 95 1.6
+<<<<<<< HEAD
+=======
+#
+ghd
+>>>>>>> f208e06fdd72232d70e35fc068e3a5869926f06d
 #

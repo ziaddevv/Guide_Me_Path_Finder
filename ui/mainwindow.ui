@@ -62,6 +62,9 @@
       <height>541</height>
      </rect>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::FocusPolicy::NoFocus</enum>
+    </property>
    </widget>
    <widget class="QPushButton" name="addGraphButton">
     <property name="geometry">
@@ -116,6 +119,9 @@
        <width>1141</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
      </property>
     </widget>
     <widget class="QComboBox" name="start">
@@ -201,12 +207,25 @@
      <x>0</x>
      <y>0</y>
      <width>1358</width>
-     <height>29</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>MapSelectionCmb</tabstop>
+  <tabstop>exploreButton</tabstop>
+  <tabstop>editGraph</tabstop>
+  <tabstop>addGraphButton</tabstop>
+  <tabstop>deleteGraphButton</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>start</tabstop>
+  <tabstop>BFS</tabstop>
+  <tabstop>DFS</tabstop>
+  <tabstop>traversal</tabstop>
+  <tabstop>graphicsView</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

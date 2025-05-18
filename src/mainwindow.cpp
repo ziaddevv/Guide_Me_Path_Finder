@@ -9,6 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Set focus border style for all widgets inside this form
+    this->setStyleSheet(R"(
+        QWidget:focus {
+            border: 2px solid #377DFF;
+            border-radius: 4px;
+        }
+    )");
 
 
     for (const auto& graph : program.graphs) {
@@ -19,12 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->MapSelectionCmb, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::onMapSelectionChanged);
 
-
-    if (!program.graphs.empty()) {
-        program.currentGraph = &program.graphs[0];
-
-        ShowMap(0);
-    }
     // updateCityComboBoxes();
     // ShowMap(0);
 }
@@ -287,6 +288,7 @@ void MainWindow::ShowMap(int index)
             connect(animationTimer, &QTimer::timeout, this, &MainWindow::animateTraversalStep);
         }
 }
+
 void MainWindow::resetGraphColors()
 {
     for (auto node : cityNodes) {
@@ -337,18 +339,23 @@ void MainWindow::animateTraversalStep()
 
     currentAnimationStep++;
 }
+
 void MainWindow::onMapSelectionChanged(int index)
 {
+    ui->start->clear();
     if (index < 0 || index >= program.graphs.size()) {
-
-        ui->start->clear();
         program.currentGraph = nullptr;
+        if (ui->graphicsView->scene()) {
+            ui->graphicsView->scene()->clear();
+        }
         return;
     }
 
     program.currentGraph = &program.graphs[index];
     ShowMap(index);
+
     ui->start->clear();
+    ui->traversal->clear();
     for (const auto& city : program.currentGraph->getAllCities()) {
         ui->start->addItem(QString::fromStdString(city));
     }
@@ -364,40 +371,31 @@ void MainWindow::on_addGraphButton_clicked()
     if (ok && !name.isEmpty()) {
         program.addGraph(name.toStdString());
        updateGraphComboBox();
+
+        // Ensure that it will show the newly created graph.
+        int index = ui->MapSelectionCmb->findText(name);
+        if (index >= 0) {
+            ui->MapSelectionCmb->setCurrentIndex(index);
+            program.currentGraph = &program.graphs[index];
+            ShowMap(index);
+        }
+
         QMessageBox::information(this, "Graph Added", "Graph added successfully.");
     }
 }
 
 void MainWindow::updateGraphComboBox() {
-    QString currentSelection;
-    if (program.currentGraph) {
-        currentSelection = QString::fromStdString(program.currentGraph->name);
-    }
     ui->MapSelectionCmb->clear();
-
-    if (program.graphs.empty()) {
-        program.currentGraph = nullptr;
-        return;
-    }
 
     for (const auto& g : program.graphs) {
         ui->MapSelectionCmb->addItem(QString::fromStdString(g.name));
     }
 
+    ui->MapSelectionCmb->setCurrentIndex(-1);
+    program.currentGraph = nullptr;
 
-    int index = -1;
-    if (!currentSelection.isEmpty()) {
-        index = ui->MapSelectionCmb->findText(currentSelection);
-    }
-
-    if (index >= 0) {
-        ui->MapSelectionCmb->setCurrentIndex(index);
-    } else if (!program.graphs.empty()) {
-
-        ui->MapSelectionCmb->setCurrentIndex(0);
-        program.currentGraph = &program.graphs[0];
-    } else {
-        program.currentGraph = nullptr;
+    if (ui->graphicsView->scene()) {
+        ui->graphicsView->scene()->clear();
     }
 }
 
@@ -414,7 +412,6 @@ void MainWindow::on_deleteGraphButton_clicked()
         bool deleted = program.deleteGraph(name.toStdString());
         if (deleted) {
             updateGraphComboBox();
-            ui->graphicsView->scene()->clear();
             QMessageBox::information(this, "Deleted", "Graph deleted.");
         } else {
             QMessageBox::warning(this, "Error", "Graph not found.");
@@ -492,8 +489,13 @@ void MainWindow::on_saveBtn_clicked()
     program.saveGraphs();
     this->close();
 }
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if (!program.isModified) {
+        event->accept();
+        return;
+    }
 
     QMessageBox::StandardButton reply = QMessageBox::question(
         this,
@@ -509,7 +511,5 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
         event->accept();
     }
-
-
 }
 
