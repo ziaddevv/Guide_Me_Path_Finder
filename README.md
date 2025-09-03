@@ -18,7 +18,7 @@ A Qt-based C++ console application that helps users manage cities and distances,
 ## 💻 Requirements
 - Qt 5.15 or later
 - C++11 or later
-- Standard libraries (no external dependencies)
+- Standard librariess (no external dependencies)
 
 ## 🔄 How to Run
 1. Clone the repository:
